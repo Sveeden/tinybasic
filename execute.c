@@ -9,6 +9,18 @@
 #include <stdbool.h>
 #include "pico/stdlib.h"
 
+// Global interrupt flag for Ctrl-C handling
+volatile int execution_interrupted = 0;
+
+// Check if execution should be interrupted and clear the flag
+int should_stop_execution(void) {
+    if (execution_interrupted) {
+        execution_interrupted = 0;
+        return 1;
+    }
+    return 0;
+}
+
 // Helper to check if a string is a number
 static int is_number(const char *str) {
     if (!str || *str == '\0') return 0;
@@ -185,6 +197,25 @@ static void execute_input(Token* tokens, int token_count) {
             int c = getchar_timeout_us(0);
             if (c == PICO_ERROR_TIMEOUT) continue;
             
+            // Check for Ctrl+C (0x03) - interrupt execution
+            if (c == 0x03) {
+                printf("\n^C\n");
+                fflush(stdout);
+                execution_interrupted = 1;  // Set global interrupt flag
+                // Exit with empty string to abort INPUT
+                input_line[0] = '\0';
+                len = 0;
+                // Set variable to 0 or "" and return to abort gracefully
+                char assign_str[512];
+                if (is_string_var) {
+                    snprintf(assign_str, sizeof(assign_str), "%s=\"\"", var_name);
+                } else {
+                    snprintf(assign_str, sizeof(assign_str), "%s=0", var_name);
+                }
+                var_set(assign_str);
+                return;  // Return to calling code
+            }
+            
             // Handle Enter key: 0x0D (CR) or 0x0A (LF)
             if (c == 0x0D || c == 0x0A || c == '\r' || c == '\n') {
                 putchar('\n');
@@ -358,6 +389,12 @@ int execute(Token* tokens, int token_count, int line_num) {
             {
                 int run_line = prog_first_line();
                 while (run_line >= 0) {
+                    // Check for Ctrl-C interrupt
+                    if (should_stop_execution()) {
+                        printf("BREAK\n");
+                        break;  // Exit RUN loop
+                    }
+                    
                     const char *line_text = prog_get_line(run_line);
                     if (line_text) {
                         int tc;

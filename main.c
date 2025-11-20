@@ -58,6 +58,7 @@ int main() {
             // Check for Ctrl+C (0x03)
             if (c == 0x03) {
                 printf("\n^C\n");
+                execution_interrupted = 1;  // Set interrupt flag
                 fflush(stdout);
                 line[0] = '\0';
                 len = 0;
