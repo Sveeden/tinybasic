@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define MAX_LINES 100
+#define MAX_LINES 200
 #define MAX_LINE_LENGTH 256
 
 typedef struct {
