@@ -88,8 +88,13 @@ static void execute_print(Token* tokens, int token_count) {
         else {
             printf("%s", arg);
         }
+        
+        // If this token doesn't have a semicolon, print newline after it
+        // Otherwise continue on same line
+        if (!tokens[i].has_semicolon && i == token_count - 1) {
+            printf("\n");
+        }
     }
-    printf("\n");
 }
 
 static void execute_let(Token* tokens, int token_count) {

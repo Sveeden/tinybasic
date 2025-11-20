@@ -68,7 +68,20 @@ Token* tokenize(const char *line, int *token_count) {
                 
                 tokens[*token_count].type = TOKEN_PRINT;
                 tokens[*token_count].is_string_literal = 1;  // Mark as string literal
+                tokens[*token_count].has_semicolon = 0;  // Reset semicolon flag
                 (*token_count)++;
+                
+                // Check for semicolon after quoted string
+                while (*line == ' ' || *line == '\t') {
+                    line++;
+                }
+                if (*line == ';') {
+                    tokens[*token_count - 1].has_semicolon = 1;  // Mark previous token as having semicolon
+                    line++;
+                    while (*line == ' ' || *line == '\t') {
+                        line++;
+                    }
+                }
             } else if (*line == ';') {
                 // Skip semicolon and spaces
                 line++;
@@ -86,13 +99,21 @@ Token* tokenize(const char *line, int *token_count) {
                 
                 if (strlen(tokens[*token_count].value) > 0) {
                     tokens[*token_count].type = TOKEN_PRINT;
+                    tokens[*token_count].has_semicolon = 0;  // Reset semicolon flag
                     (*token_count)++;
+                    
+                    // Check for semicolon after unquoted item
+                    while (*line == ' ' || *line == '\t') {
+                        line++;
+                    }
+                    if (*line == ';') {
+                        tokens[*token_count - 1].has_semicolon = 1;  // Mark previous token as having semicolon
+                        line++;
+                        while (*line == ' ' || *line == '\t') {
+                            line++;
+                        }
+                    }
                 }
-            }
-            
-            // Skip spaces after the item
-            while (*line == ' ' || *line == '\t') {
-                line++;
             }
         }
     }
