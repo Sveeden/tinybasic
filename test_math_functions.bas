@@ -67,20 +67,18 @@
 670 PRINT "TEST 6: SINE (SIN)"
 680 LET sin0=SIN(0)
 690 PRINT "SIN(0) = " sin0 " (expected 0)"
-700 LET pi=3.14159
-710 LET sin_pi=SIN(pi)
-720 PRINT "SIN(PI) = " sin_pi " (expected ~0)"
-730 PRINT "Result: PASS"
+700 LET sin_pi_2=SIN(1.5708)
+710 PRINT "SIN(PI/2) = " sin_pi_2 " (expected ~1)"
+720 PRINT "Result: PASS"
 740 INPUT "Press Enter for next test: "; x
 750 REM
 760 REM ===== TEST 7: COSINE FUNCTION =====
 770 PRINT "TEST 7: COSINE (COS)"
 780 LET cos0=COS(0)
 790 PRINT "COS(0) = " cos0 " (expected 1)"
-800 LET pi_val=3.14159
-810 LET cos_pi=COS(pi_val)
-820 PRINT "COS(PI) = " cos_pi " (expected -1)"
-830 PRINT "Result: PASS"
+800 LET cos_pi_2=COS(1.5708)
+810 PRINT "COS(PI/2) = " cos_pi_2 " (expected ~0)"
+820 PRINT "Result: PASS"
 840 INPUT "Press Enter for next test: "; x
 850 REM
 860 REM ===== TEST 8: TANGENT FUNCTION =====
