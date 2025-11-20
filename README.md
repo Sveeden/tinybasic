@@ -1,6 +1,6 @@
-# TinyBASIC for Raspberry Pi Pico 2
+# OBI-88 BASIC for Raspberry Pi Pico 2
 
-A complete TinyBASIC interpreter for the Raspberry Pi Pico 2 (RP2350) with filesystem support.
+A complete BASIC interpreter for the Raspberry Pi Pico 2 (RP2350) with filesystem support. OBI-88 stands for Optimized BASIC Interpreter for embedded systems.
 
 ## Features
 

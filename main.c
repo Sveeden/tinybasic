@@ -24,7 +24,7 @@ int main() {
     sleep_ms(500);  // Give terminal time to be ready
 
     // Print banner one line at a time for reliability
-    printf("\n=== TinyBASIC ===\n"); fflush(stdout); sleep_ms(100);
+    printf("\n=== OBI-88 BASIC ===\n"); fflush(stdout); sleep_ms(100);
     printf("Type commands. Examples:\n"); fflush(stdout); sleep_ms(100);
     printf("  PRINT \"hello\"\n"); fflush(stdout); sleep_ms(100);
     printf("  LET x=10\n"); fflush(stdout); sleep_ms(100);
