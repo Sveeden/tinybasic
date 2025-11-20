@@ -72,7 +72,7 @@
 720 NEXT
 730 PRINT ""
 740 PRINT "Result: PASS"
-740 INPUT "Press Enter for next test: "; x
+745 INPUT "Press Enter for next test: "; x
 750 REM
 760 REM ===== TEST 8: WHILE LOOPS =====
 770 PRINT "TEST 8: WHILE LOOPS (countdown)"
