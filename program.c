@@ -136,3 +136,12 @@ void prog_list(void) {
         printf("%d %s\n", program[i].line_num, program[i].text);
     }
 }
+
+int prog_get_memory_used(void) {
+    int used = 0;
+    for (int i = 0; i < line_count; i++) {
+        // Estimate: line number (4 bytes) + text content (strlen) + overhead (8 bytes)
+        used += 4 + strlen(program[i].text) + 8;
+    }
+    return used;
+}

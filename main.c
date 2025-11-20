@@ -25,24 +25,33 @@ int main() {
     sleep_ms(500);  // Give terminal time to be ready
 
     // Print cool ASCII banner with version
-    printf("\n"); fflush(stdout); sleep_ms(100);
-    printf("****************************\n"); fflush(stdout); sleep_ms(100);
-    printf("*    OBI-88 BASIC\n"); fflush(stdout); sleep_ms(100);
-    printf("*             v%s     *\n", VERSION); fflush(stdout); sleep_ms(100);
-    printf("****************************\n"); fflush(stdout); sleep_ms(100);
+    printf("\n"); fflush(stdout); sleep_ms(50);
+    printf("***************************************************************\n"); fflush(stdout); sleep_ms(50);
+    printf("*                                                             *\n"); fflush(stdout); sleep_ms(50);
+    printf("*                 OBI-88 BASIC INTERPRETER                    *\n"); fflush(stdout); sleep_ms(50);
+    printf("*                       Version 1.0                           *\n"); fflush(stdout); sleep_ms(50);
+    printf("*                                                             *\n"); fflush(stdout); sleep_ms(50);
+    printf("*            Ready to type. Ready to create.                  *\n"); fflush(stdout); sleep_ms(50);
+    printf("*                                                             *\n"); fflush(stdout); sleep_ms(50);
+    printf("***************************************************************\n"); fflush(stdout); sleep_ms(50);
     printf("\n"); fflush(stdout); sleep_ms(100);
 
     // Initialize filesystem
     printf("Initializing filesystem...\n"); fflush(stdout);
     if (fs_init() == 0) {
+        // Always start at root directory
+        fs_cd("/");
         printf("Drive 0: ready at %s\n", fs_get_path()); fflush(stdout);
     } else {
         printf("Warning: Filesystem init failed\n"); fflush(stdout);
     }
     
-    // Show memory info (using rough estimates for Pico)
-    printf("Drive memory free: 1015 KB\n"); fflush(stdout);
-    printf("Total RAM: 264 KB / RAM free: ~160 KB\n"); fflush(stdout);
+    // Show memory info
+    int drive_used_kb = prog_get_memory_used() / 1024;
+    int drive_free_kb = 1015 - drive_used_kb;
+    if (drive_free_kb < 0) drive_free_kb = 0;
+    printf("Drive Memory: %d/%d KB\n", drive_used_kb, 1015); fflush(stdout);
+    printf("RAM: 0/520 KB\n"); fflush(stdout);
     printf("Ready\n"); fflush(stdout);
     printf("\n"); fflush(stdout); sleep_ms(100);
     

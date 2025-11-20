@@ -465,7 +465,31 @@ Token* tokenize(const char *line, int *token_count) {
             *token_count = 1;
         }
     }
-    // Check for RM
+    // Check for RMDIR (must come BEFORE RM check, since "RM" is a substring of "RMDIR")
+    else if (strncmp(command, "RMDIR", 5) == 0) {
+        tokens[0].type = TOKEN_RMDIR;
+        strcpy(tokens[0].value, "RMDIR");
+        line += 5;
+        while (*line == ' ' || *line == '\t') line++;
+        
+        if (*line != '\0') {
+            if (*line == '"') {
+                line++;
+                char *dest = tokens[1].value;
+                while (*line && *line != '"') {
+                    *dest++ = *line++;
+                }
+                *dest = '\0';
+            } else {
+                strcpy(tokens[1].value, line);
+            }
+            tokens[1].type = TOKEN_RMDIR;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for RM (after RMDIR check)
     else if (strncmp(command, "RM", 2) == 0) {
         tokens[0].type = TOKEN_RM;
         strcpy(tokens[0].value, "RM");
@@ -484,6 +508,30 @@ Token* tokenize(const char *line, int *token_count) {
                 strcpy(tokens[1].value, line);
             }
             tokens[1].type = TOKEN_RM;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for DELETE (alias for RM)
+    else if (strncmp(command, "DELETE", 6) == 0) {
+        tokens[0].type = TOKEN_DELETE;
+        strcpy(tokens[0].value, "DELETE");
+        line += 6;
+        while (*line == ' ' || *line == '\t') line++;
+        
+        if (*line != '\0') {
+            if (*line == '"') {
+                line++;
+                char *dest = tokens[1].value;
+                while (*line && *line != '"') {
+                    *dest++ = *line++;
+                }
+                *dest = '\0';
+            } else {
+                strcpy(tokens[1].value, line);
+            }
+            tokens[1].type = TOKEN_DELETE;
             *token_count = 2;
         } else {
             *token_count = 1;
@@ -586,30 +634,6 @@ Token* tokenize(const char *line, int *token_count) {
             *token_count = 1;
         }
     }
-    // Check for RMDIR
-    else if (strncmp(command, "RMDIR", 5) == 0) {
-        tokens[0].type = TOKEN_RMDIR;
-        strcpy(tokens[0].value, "RMDIR");
-        line += 5;
-        while (*line == ' ' || *line == '\t') line++;
-        
-        if (*line != '\0') {
-            if (*line == '"') {
-                line++;
-                char *dest = tokens[1].value;
-                while (*line && *line != '"') {
-                    *dest++ = *line++;
-                }
-                *dest = '\0';
-            } else {
-                strcpy(tokens[1].value, line);
-            }
-            tokens[1].type = TOKEN_RMDIR;
-            *token_count = 2;
-        } else {
-            *token_count = 1;
-        }
-    }
     // Check for DRIVES
     else if (strncmp(command, "DRIVES", 6) == 0) {
         tokens[0].type = TOKEN_DRIVES;
@@ -670,6 +694,26 @@ Token* tokenize(const char *line, int *token_count) {
         strcpy(tokens[0].value, "RETURN");
         *token_count = 1;
     }
+    // Check for HELP
+    else if (strncmp(command, "HELP", 4) == 0) {
+        tokens[0].type = TOKEN_HELP;
+        strcpy(tokens[0].value, "HELP");
+        line += 4;  // Skip "HELP"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get optional topic name
+        if (*line != '\0') {
+            char *dest = tokens[1].value;
+            while (*line && *line != ' ' && *line != '\t') {
+                *dest++ = *line++;
+            }
+            *dest = '\0';
+            tokens[1].type = TOKEN_HELP;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
     // Check for implicit LET (e.g., "x=10" without LET keyword)
     else if (strchr(line, '=')) {
         tokens[0].type = TOKEN_LET;
@@ -690,3 +734,4 @@ Token* tokenize(const char *line, int *token_count) {
 void free_tokens(Token *tokens) {
     free(tokens);
 }
+

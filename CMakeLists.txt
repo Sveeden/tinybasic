@@ -8,7 +8,7 @@ include(pico_sdk_import.cmake)
 project(obi88basic C CXX)
 pico_sdk_init()
 
-add_executable(obi88basic main.c token.c execute.c variables.c program.c loops.c filesystem.c math.c)
+add_executable(obi88basic main.c token.c execute.c variables.c program.c loops.c filesystem.c math.c help.c)
 target_link_libraries(obi88basic pico_stdlib hardware_flash hardware_sync m)
 pico_enable_stdio_usb(obi88basic 1)
 pico_enable_stdio_uart(obi88basic 0)

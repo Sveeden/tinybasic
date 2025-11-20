@@ -25,4 +25,10 @@ void prog_list(void);
 // Check if a line starts with a number
 int prog_has_line_number(const char *line, int *line_num);
 
+// Get the last line number in the program
+int prog_get_last_line_number(void);
+
+// Calculate memory used by program in bytes
+int prog_get_memory_used(void);
+
 #endif

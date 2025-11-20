@@ -1,0 +1,51 @@
+10 REM ===== OBI-88 BASIC PRINT EXPRESSION TEST =====
+20 PRINT "OBI-88 BASIC - PRINT EXPRESSION TEST"
+30 PRINT "===================================="
+40 PRINT ""
+50 REM
+100 REM ===== TEST 1: SIMPLE ADDITION =====
+110 PRINT "TEST 1: Simple Addition"
+120 PRINT 2+2
+130 PRINT "Expected: 4"
+140 PRINT ""
+150 REM
+200 REM ===== TEST 2: COMPLEX EXPRESSION =====
+210 PRINT "TEST 2: Complex Expression (4*5+4+3)"
+220 PRINT 4*5+4+3
+230 PRINT "Expected: 27"
+240 PRINT ""
+250 REM
+300 REM ===== TEST 3: DIVISION =====
+310 PRINT "TEST 3: Division (20/4)"
+320 PRINT 20/4
+330 PRINT "Expected: 5"
+340 PRINT ""
+350 REM
+400 REM ===== TEST 4: ORDER OF OPERATIONS =====
+410 PRINT "TEST 4: Order of Operations (2+3*4)"
+420 PRINT 2+3*4
+430 PRINT "Expected: 14"
+440 PRINT ""
+450 REM
+500 REM ===== TEST 5: PARENTHESES =====
+510 PRINT "TEST 5: Parentheses ((2+3)*4)"
+520 PRINT (2+3)*4
+530 PRINT "Expected: 20"
+540 PRINT ""
+550 REM
+600 REM ===== TEST 6: MIXED WITH TEXT =====
+610 PRINT "TEST 6: Mixed with text"
+620 PRINT "The answer is: " 2+2
+630 PRINT ""
+640 REM
+700 REM ===== TEST 7: NEGATIVE NUMBERS =====
+710 PRINT "TEST 7: Negative Numbers (-10+5)"
+720 PRINT -10+5
+730 PRINT "Expected: -5"
+740 PRINT ""
+750 REM
+800 REM ===== SUMMARY =====
+810 PRINT "PRINT EXPRESSION TEST COMPLETE!"
+820 PRINT "===================================="
+830 PRINT ""
+840 END

@@ -21,6 +21,7 @@ typedef enum {
     TOKEN_LOAD,
     TOKEN_DIR,
     TOKEN_RM,
+    TOKEN_DELETE,
     TOKEN_FORMAT,
     TOKEN_CD,
     TOKEN_PWD,
@@ -33,6 +34,7 @@ typedef enum {
     TOKEN_GOTO,
     TOKEN_END,
     TOKEN_NOTE,
+    TOKEN_HELP,
     TOKEN_UNKNOWN,
     TOKEN_EOF,
 } TokenType;

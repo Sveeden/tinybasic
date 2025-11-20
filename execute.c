@@ -3,11 +3,16 @@
 #include "program.h"
 #include "loops.h"
 #include "filesystem.h"
+#include "help.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "pico/stdlib.h"
+
+// Forward declaration of math evaluator (from math.c)
+// We can't include math.h due to Token struct name collision
+extern float evaluate_math_expression(const char *expr, int *error);
 
 // Global interrupt flag for Ctrl-C handling
 volatile int execution_interrupted = 0;
@@ -21,12 +26,14 @@ int should_stop_execution(void) {
     return 0;
 }
 
-// Helper to check if a string is a number
+// Helper to check if a string is a number (integer or float)
 static int is_number(const char *str) {
     if (!str || *str == '\0') return 0;
     char *endptr;
-    strtol(str, &endptr, 10);
-    return *endptr == '\0';
+    strtof(str, &endptr);
+    // Accept if we parsed something and reached end of string
+    // Also handle cases with just a sign or decimal point
+    return *endptr == '\0' && endptr != str;
 }
 
 // Helper to compare values
@@ -75,15 +82,30 @@ static void execute_print(Token* tokens, int token_count) {
         else if (is_number(arg)) {
             printf("%s", arg);
         }
-        // Check if it's a variable name (single word, no quotes, no spaces)
-        else if (strlen(arg) > 0 && arg[0] != '"' && !strchr(arg, ' ')) {
+        // Check if it's a variable name (single word, no quotes, no spaces, no operators)
+        else if (strlen(arg) > 0 && arg[0] != '"' && !strchr(arg, ' ') && !strchr(arg, '+') && !strchr(arg, '-') && !strchr(arg, '*') && !strchr(arg, '/') && !strchr(arg, '(') && !strchr(arg, ')')) {
             const char *val = var_get(arg);
             if (val != NULL) {
                 printf("%s", val);
             } else {
                 printf("?UNDEFINED VARIABLE: %s", arg);
             }
-        } 
+        }
+        // Check if it contains mathematical operators - evaluate as expression
+        else if (strchr(arg, '+') || strchr(arg, '-') || strchr(arg, '*') || strchr(arg, '/') || strchr(arg, '(') || strchr(arg, ')')) {
+            int error = 0;
+            float result = evaluate_math_expression(arg, &error);
+            if (error) {
+                printf("?MATH ERROR");
+            } else {
+                // Print as integer if it's a whole number, otherwise as float
+                if (result == (int)result) {
+                    printf("%d", (int)result);
+                } else {
+                    printf("%g", result);
+                }
+            }
+        }
         // Otherwise it's a string literal (from quotes or spaces)
         else {
             printf("%s", arg);
@@ -310,8 +332,60 @@ static void execute_input(Token* tokens, int token_count) {
     }
 }
 
+static void execute_help(Token* tokens, int token_count) {
+    // HELP with no argument shows all categories
+    if (token_count < 2 || strlen(tokens[1].value) == 0) {
+        help_list_categories();
+        return;
+    }
+    
+    // HELP <topic> shows help for that topic and appends code to program
+    const char *topic = tokens[1].value;
+    const HelpEntry *entry = help_get(topic);
+    
+    if (entry == NULL) {
+        printf("?UNKNOWN HELP TOPIC: %s\n", topic);
+        return;
+    }
+    
+    // Print the help entry
+    help_print(entry);
+    
+    // Append the code lines to the program
+    help_append_to_program(entry);
+    
+    printf("Code snippet added to program.\n");
+    printf("Type LIST to see your program.\n");
+}
+
 int execute(Token* tokens, int token_count, int line_num) {
     if (token_count == 0) return -1;
+    
+    // Direct Mode Commands - only allowed when line_num == -1 (immediate mode)
+    if (line_num >= 0) {  // Program Mode - reject direct commands
+        switch (tokens[0].type) {
+            case TOKEN_LIST:
+            case TOKEN_RUN:
+            case TOKEN_NEW:
+            case TOKEN_SAVE:
+            case TOKEN_LOAD:
+            case TOKEN_DIR:
+            case TOKEN_RM:
+            case TOKEN_DELETE:
+            case TOKEN_FORMAT:
+            case TOKEN_CD:
+            case TOKEN_PWD:
+            case TOKEN_MKDIR:
+            case TOKEN_RMDIR:
+            case TOKEN_DRIVES:
+            case TOKEN_CLS:
+            case TOKEN_HELP:
+                printf("?ILLEGAL DIRECT COMMAND\n");
+                return -1;
+            default:
+                break;
+        }
+    }
     
     switch (tokens[0].type) {
         case TOKEN_PRINT:
@@ -396,10 +470,12 @@ int execute(Token* tokens, int token_count, int line_num) {
             {
                 int run_line = prog_first_line();
                 while (run_line >= 0) {
-                    // Check for Ctrl-C interrupt
-                    if (should_stop_execution()) {
-                        printf("BREAK\n");
-                        break;  // Exit RUN loop
+                    // Check for Ctrl-C interrupt by reading input without blocking
+                    int c = getchar_timeout_us(0);
+                    if (c == 0x03) {  // Ctrl+C
+                        printf("\nBREAK\n");
+                        execution_interrupted = 0;
+                        break;
                     }
                     
                     const char *line_text = prog_get_line(run_line);
@@ -493,6 +569,7 @@ int execute(Token* tokens, int token_count, int line_num) {
             }
             break;
         case TOKEN_RM:
+        case TOKEN_DELETE:
             if (token_count >= 2) {
                 fs_rm(tokens[1].value);
             } else {
@@ -620,6 +697,9 @@ int execute(Token* tokens, int token_count, int line_num) {
             fs_write_note(filename, text);
             break;
         }
+        case TOKEN_HELP:
+            execute_help(tokens, token_count);
+            break;
         case TOKEN_UNKNOWN:
             printf("Unknown command\n");
             break;

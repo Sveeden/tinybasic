@@ -23,6 +23,24 @@ void var_init(void) {
     memset(vars, 0, sizeof(vars));
 }
 
+// Helper to trim trailing zeros and unnecessary decimal point from float strings
+static void trim_float_string(char *str) {
+    if (!strchr(str, '.')) return;  // Not a float string
+    
+    // Find the end of the string
+    int len = strlen(str);
+    
+    // Trim trailing zeros
+    while (len > 0 && str[len - 1] == '0') {
+        str[--len] = '\0';
+    }
+    
+    // If the string ends with '.', remove it too
+    if (len > 0 && str[len - 1] == '.') {
+        str[--len] = '\0';
+    }
+}
+
 static int find_var(const char *name) {
     for (int i = 0; i < var_count; i++) {
         if (strcmp(vars[i].name, name) == 0) {
@@ -52,6 +70,11 @@ void var_set(const char *assignment) {
         name[--len] = '\0';
     }
     
+    // Uppercase variable name for consistency
+    for (int i = 0; i < len; i++) {
+        name[i] = toupper(name[i]);
+    }
+    
     // Check if it's a string variable (ends with $)
     if (len > 0 && name[len - 1] == '$') {
         is_string = 1;
@@ -72,14 +95,23 @@ void var_set(const char *assignment) {
         }
         *dest = '\0';
         is_string = 1;
+    } else if (is_string) {
+        // String variable - store the value as-is (no math evaluation for strings)
+        strcpy(value, val_start);
     } else {
-        // Use math expression evaluator for numeric expressions
+        // Numeric variable - use math expression evaluator
         int error = 0;
         float result = evaluate_math_expression(val_start, &error);
         
         if (!error) {
             // Successfully evaluated as math expression
-            snprintf(value, sizeof(value), "%.6g", result);
+            // Print as integer if it's a whole number, otherwise as float
+            if (result == (int)result) {
+                snprintf(value, sizeof(value), "%d", (int)result);
+            } else {
+                snprintf(value, sizeof(value), "%g", result);
+                trim_float_string(value);  // Remove trailing zeros
+            }
             is_string = 0;
         } else {
             // If evaluation failed, treat as string or just copy the value
@@ -103,7 +135,13 @@ void var_set(const char *assignment) {
 }
 
 const char* var_get(const char *name) {
-    int idx = find_var(name);
+    // Uppercase name for consistent lookup
+    char upper_name[MAX_VAR_NAME];
+    strncpy(upper_name, name, MAX_VAR_NAME - 1);
+    for (int i = 0; upper_name[i]; i++) {
+        upper_name[i] = toupper(upper_name[i]);
+    }
+    int idx = find_var(upper_name);
     if (idx >= 0) {
         return vars[idx].value;
     }
@@ -111,7 +149,13 @@ const char* var_get(const char *name) {
 }
 
 int var_is_string(const char *name) {
-    int idx = find_var(name);
+    // Uppercase name for consistent lookup
+    char upper_name[MAX_VAR_NAME];
+    strncpy(upper_name, name, MAX_VAR_NAME - 1);
+    for (int i = 0; upper_name[i]; i++) {
+        upper_name[i] = toupper(upper_name[i]);
+    }
+    int idx = find_var(upper_name);
     if (idx >= 0) {
         return vars[idx].is_string;
     }
@@ -119,7 +163,13 @@ int var_is_string(const char *name) {
 }
 
 int var_is_number(const char *name) {
-    int idx = find_var(name);
+    // Uppercase name for consistent lookup
+    char upper_name[MAX_VAR_NAME];
+    strncpy(upper_name, name, MAX_VAR_NAME - 1);
+    for (int i = 0; upper_name[i]; i++) {
+        upper_name[i] = toupper(upper_name[i]);
+    }
+    int idx = find_var(upper_name);
     if (idx >= 0) {
         return !vars[idx].is_string;
     }
