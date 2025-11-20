@@ -41,7 +41,7 @@ Token* tokenize(const char *line, int *token_count) {
             line++;  // Skip spaces
         }
         
-        // Parse print items separated by semicolons
+        // Parse print items - separated by spaces or semicolons
         while (*line != '\0' && *token_count < 10) {
             // Handle quoted strings: "hello"
             if (*line == '"') {
@@ -69,19 +69,20 @@ Token* tokenize(const char *line, int *token_count) {
                 tokens[*token_count].type = TOKEN_PRINT;
                 tokens[*token_count].is_string_literal = 1;  // Mark as string literal
                 (*token_count)++;
+            } else if (*line == ';') {
+                // Skip semicolon and spaces
+                line++;
+                while (*line == ' ' || *line == '\t') {
+                    line++;
+                }
+                continue;
             } else {
-                // Unquoted expression (read until semicolon or end)
+                // Unquoted variable or expression - read until space or semicolon or end
                 char *dest = tokens[*token_count].value;
-                while (*line && *line != ';') {
+                while (*line && *line != ';' && *line != ' ' && *line != '\t') {
                     *dest++ = *line++;
                 }
                 *dest = '\0';
-                
-                // Trim trailing spaces
-                dest--;
-                while (dest >= tokens[*token_count].value && (*dest == ' ' || *dest == '\t')) {
-                    *dest-- = '\0';
-                }
                 
                 if (strlen(tokens[*token_count].value) > 0) {
                     tokens[*token_count].type = TOKEN_PRINT;
@@ -92,20 +93,6 @@ Token* tokenize(const char *line, int *token_count) {
             // Skip spaces after the item
             while (*line == ' ' || *line == '\t') {
                 line++;
-            }
-            
-            // Check for semicolon
-            if (*line == ';') {
-                line++;  // Skip semicolon
-                // Mark that we have a semicolon (no newline after this item)
-                tokens[*token_count - 1].type = TOKEN_PRINT;  // Still PRINT but we'll track semicolons differently
-                
-                while (*line == ' ' || *line == '\t') {
-                    line++;
-                }
-            } else {
-                // No semicolon, we're done
-                break;
             }
         }
     }

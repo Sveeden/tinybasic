@@ -54,37 +54,40 @@ static int compare(const char *left, const char *op, const char *right) {
 static void execute_print(Token* tokens, int token_count) {
     if (token_count < 2) return;
     
-    const char *arg = tokens[1].value;
-    
-    // Check if it's a string literal (was originally quoted)
-    if (tokens[1].is_string_literal) {
-        printf("%s", arg);
-    }
-    // Check if it's a string variable (ends with $)
-    else if (strlen(arg) > 0 && arg[strlen(arg) - 1] == '$') {
-        const char *val = var_get(arg);
-        if (val != NULL) {
-            printf("%s", val);
-        } else {
-            printf("?UNDEFINED VARIABLE: %s", arg);
+    // Process all print arguments (tokens 1 through token_count-1)
+    for (int i = 1; i < token_count; i++) {
+        const char *arg = tokens[i].value;
+        
+        // Check if it's a string literal (was originally quoted)
+        if (tokens[i].is_string_literal) {
+            printf("%s", arg);
         }
-    } 
-    // Check if it's a number literal
-    else if (is_number(arg)) {
-        printf("%s", arg);
-    }
-    // Check if it's a variable name (single word, no quotes, no spaces)
-    else if (strlen(arg) > 0 && arg[0] != '"' && !strchr(arg, ' ')) {
-        const char *val = var_get(arg);
-        if (val != NULL) {
-            printf("%s", val);
-        } else {
-            printf("?UNDEFINED VARIABLE: %s", arg);
+        // Check if it's a string variable (ends with $)
+        else if (strlen(arg) > 0 && arg[strlen(arg) - 1] == '$') {
+            const char *val = var_get(arg);
+            if (val != NULL) {
+                printf("%s", val);
+            } else {
+                printf("?UNDEFINED VARIABLE: %s", arg);
+            }
+        } 
+        // Check if it's a number literal
+        else if (is_number(arg)) {
+            printf("%s", arg);
         }
-    } 
-    // Otherwise it's a string literal (from quotes or spaces)
-    else {
-        printf("%s", arg);
+        // Check if it's a variable name (single word, no quotes, no spaces)
+        else if (strlen(arg) > 0 && arg[0] != '"' && !strchr(arg, ' ')) {
+            const char *val = var_get(arg);
+            if (val != NULL) {
+                printf("%s", val);
+            } else {
+                printf("?UNDEFINED VARIABLE: %s", arg);
+            }
+        } 
+        // Otherwise it's a string literal (from quotes or spaces)
+        else {
+            printf("%s", arg);
+        }
     }
     printf("\n");
 }
