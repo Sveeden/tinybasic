@@ -32,6 +32,7 @@ typedef enum {
     TOKEN_RETURN,
     TOKEN_GOTO,
     TOKEN_END,
+    TOKEN_NOTE,
     TOKEN_UNKNOWN,
     TOKEN_EOF,
 } TokenType;

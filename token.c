@@ -355,6 +355,38 @@ Token* tokenize(const char *line, int *token_count) {
         strcpy(tokens[0].value, "END");
         *token_count = 1;
     }
+    // Check for NOTE
+    else if (strncmp(command, "NOTE", 4) == 0) {
+        tokens[0].type = TOKEN_NOTE;
+        strcpy(tokens[0].value, "NOTE");
+        *token_count = 1;
+        
+        // Get filename and text: NOTE filename text text text
+        line += 4;  // Skip "NOTE"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Extract filename (first word)
+        char *dest = tokens[1].value;
+        while (*line && *line != ' ' && *line != '\t') {
+            *dest++ = *line++;
+        }
+        *dest = '\0';
+        
+        if (strlen(tokens[1].value) > 0) {
+            tokens[1].type = TOKEN_NOTE;
+            *token_count = 2;
+            
+            // Skip spaces before text
+            while (*line == ' ' || *line == '\t') line++;
+            
+            // Get remaining text
+            if (*line != '\0') {
+                strcpy(tokens[2].value, line);
+                tokens[2].type = TOKEN_NOTE;
+                *token_count = 3;
+            }
+        }
+    }
     // Check for SAVE
     else if (strncmp(command, "SAVE", 4) == 0) {
         tokens[0].type = TOKEN_SAVE;

@@ -26,6 +26,7 @@ int fs_dir(const char *path);  // List directory
 int fs_save(const char *filename);   // Save current program
 int fs_load(const char *filename);   // Load program
 int fs_rm(const char *filename);     // Delete file
+int fs_write_note(const char *filename, const char *text);  // Write single-line note to file
 
 // System operations
 int fs_format(uint8_t drive);

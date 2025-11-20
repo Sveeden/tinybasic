@@ -602,6 +602,24 @@ int execute(Token* tokens, int token_count, int line_num) {
             return -2;  // Special return code to signal end of program
             break;
         }
+        case TOKEN_NOTE: {
+            // NOTE filename text - save text to filename.txt
+            if (token_count < 2) {
+                printf("?NOTE REQUIRES FILENAME\n");
+                break;
+            }
+            
+            // Build filename with .txt extension
+            char filename[128];
+            snprintf(filename, sizeof(filename), "%s.txt", tokens[1].value);
+            
+            // Get text content (token[2] if exists, otherwise empty)
+            const char *text = (token_count >= 3) ? tokens[2].value : "";
+            
+            // Save to file
+            fs_write_note(filename, text);
+            break;
+        }
         case TOKEN_UNKNOWN:
             printf("Unknown command\n");
             break;

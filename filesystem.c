@@ -410,6 +410,84 @@ int fs_save(const char *filename) {
     return 0;
 }
 
+int fs_write_note(const char *filename, const char *text) {
+    if (!fs_mounted) return -1;
+    
+    // Build full path
+    char full_path[MAX_PATH];
+    if (filename[0] == '/') {
+        strncpy(full_path, filename, MAX_PATH - 1);
+    } else {
+        if (strcmp(fs_header.current_path, "/") == 0) {
+            snprintf(full_path, MAX_PATH, "/%s", filename);
+        } else {
+            snprintf(full_path, MAX_PATH, "%s/%s", fs_header.current_path, filename);
+        }
+    }
+    
+    // Build note data (text + newline)
+    static char note_data[MAX_FILE_SIZE];
+    int offset = snprintf(note_data, MAX_FILE_SIZE, "%s\n", text);
+    
+    if (offset >= MAX_FILE_SIZE) {
+        printf("?NOTE TOO LARGE\n");
+        return -1;
+    }
+    
+    // Find or create file entry
+    FileEntry *entry = NULL;
+    for (int i = 0; i < fs_header.root.file_count; i++) {
+        if (strcmp(fs_header.root.files[i].name, full_path) == 0) {
+            entry = &fs_header.root.files[i];
+            break;
+        }
+    }
+    
+    if (!entry) {
+        if (fs_header.root.file_count >= MAX_FILES) {
+            printf("?TOO MANY FILES\n");
+            return -1;
+        }
+        entry = &fs_header.root.files[fs_header.root.file_count++];
+        strncpy(entry->name, full_path, MAX_FILENAME - 1);
+        entry->is_directory = 0;
+        entry->offset = fs_header.next_data_offset;
+    }
+    
+    // Update file size
+    entry->size = offset;
+    
+    // Calculate space needed
+    uint32_t space_needed = (offset + FLASH_SECTOR_SIZE - 1) & ~(FLASH_SECTOR_SIZE - 1);
+    
+    // Advance next_data_offset if new file
+    if (entry->offset == fs_header.next_data_offset) {
+        fs_header.next_data_offset += space_needed;
+    }
+    
+    // Write file data to flash
+    uint32_t write_offset = FLASH_OFFSET_DRIVE0 + entry->offset;
+    uint32_t write_size = (offset + FLASH_PAGE_SIZE - 1) & ~(FLASH_PAGE_SIZE - 1);
+    uint32_t erase_size = (offset + FLASH_SECTOR_SIZE - 1) & ~(FLASH_SECTOR_SIZE - 1);
+    
+    static uint8_t write_buffer[MAX_FILE_SIZE];
+    memset(write_buffer, 0xFF, MAX_FILE_SIZE);
+    memcpy(write_buffer, note_data, offset);
+    
+    uint32_t ints = save_and_disable_interrupts();
+    
+    flash_range_erase(write_offset, erase_size);
+    flash_range_program(write_offset, write_buffer, write_size);
+    
+    restore_interrupts(ints);
+    
+    // Update header
+    write_header();
+    
+    printf("Note saved: %s (%d bytes)\n", full_path, offset);
+    return 0;
+}
+
 int fs_load(const char *filename) {
     if (!fs_mounted) return -1;
     
