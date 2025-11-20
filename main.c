@@ -1,0 +1,108 @@
+#include "pico/stdlib.h"
+#include "pico/stdio_usb.h"
+#include <stdio.h>
+#include <string.h>
+#include "token.h"
+#include "execute.h"
+#include "variables.h"
+#include "program.h"
+#include "loops.h"
+#include "filesystem.h"
+
+#define LINE_MAX 256
+
+int main() {
+    stdio_init_all();
+    var_init();
+    prog_init();
+    loop_init();
+    
+    // Wait for user to connect serial terminal
+    while (!stdio_usb_connected()) {
+        sleep_ms(100);
+    }
+    sleep_ms(500);  // Give terminal time to be ready
+
+    // Print banner one line at a time for reliability
+    printf("\n=== TinyBASIC ===\n"); fflush(stdout); sleep_ms(100);
+    printf("Type commands. Examples:\n"); fflush(stdout); sleep_ms(100);
+    printf("  PRINT \"hello\"\n"); fflush(stdout); sleep_ms(100);
+    printf("  LET x=10\n"); fflush(stdout); sleep_ms(100);
+    printf("  PRINT x\n"); fflush(stdout); sleep_ms(100);
+    printf("  IF x>5 THEN PRINT \"big\"\n"); fflush(stdout); sleep_ms(100);
+    printf("\n"); fflush(stdout); sleep_ms(100);
+    
+    // Initialize filesystem
+    printf("Initializing filesystem...\n"); fflush(stdout);
+    if (fs_init() == 0) {
+        printf("Drive 0: ready at %s\n", fs_get_path()); fflush(stdout);
+    } else {
+        printf("Warning: Filesystem init failed\n"); fflush(stdout);
+    }
+    printf("\n"); fflush(stdout); sleep_ms(100);
+    
+    char line[LINE_MAX];
+    
+    while (true) {
+        printf("> ");
+        fflush(stdout);
+        
+        // Read a line
+        size_t len = 0;
+        while (true) {
+            int c = getchar_timeout_us(0);
+            if (c == PICO_ERROR_TIMEOUT) continue;
+            
+            if (c == '\r') c = '\n';
+            if (c == '\n') {
+                putchar('\n');
+                line[len] = '\0';
+                break;
+            }
+            
+            if (c == 0x08 || c == 0x7F) {  // Backspace
+                if (len > 0) {
+                    len--;
+                    putchar('\b'); putchar(' '); putchar('\b');
+                    fflush(stdout);
+                }
+                continue;
+            }
+            
+            if (c >= 32 && c <= 126) {  // Printable ASCII
+                if (len < LINE_MAX - 1) {
+                    line[len++] = (char)c;
+                    putchar(c);
+                    fflush(stdout);
+                }
+            }
+        }
+        
+        // Process the line
+        if (len > 0) {
+            // Strip leading "> " if present (from paste operations)
+            const char *cmd = line;
+            if (line[0] == '>' && line[1] == ' ') {
+                cmd = line + 2;  // Skip "> "
+            }
+            
+            if (strlen(cmd) > 0) {
+                int line_num;
+                
+                // Check if this is a numbered line
+                if (prog_has_line_number(cmd, &line_num)) {
+                    // Store it in the program
+                    prog_store_line(cmd);
+                } else {
+                    // Execute immediately
+                    int token_count;
+                    Token* tokens = tokenize(cmd, &token_count);
+                    execute(tokens, token_count, -1);  // -1 = immediate mode
+                    free_tokens(tokens);
+                }
+            }
+        }
+    }
+    
+    return 0;
+}
