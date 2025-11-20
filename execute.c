@@ -490,10 +490,9 @@ int execute(Token* tokens, int token_count, int line_num) {
             fs_drives();
             break;
         case TOKEN_CLS:
-            // Clear screen - output multiple newlines (25 lines)
-            for (int i = 0; i < 25; i++) {
-                printf("\n");
-            }
+            // Clear screen using ANSI escape sequence
+            // ESC[2J = clear screen, ESC[H = move cursor to home (top-left)
+            printf("\x1B[2J\x1B[H");
             fflush(stdout);
             break;
         case TOKEN_UNKNOWN:
