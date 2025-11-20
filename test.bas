@@ -122,9 +122,22 @@
 1220 PRINT "Loops: FOR/NEXT, WHILE/WEND"
 1230 PRINT "Filesystem: SAVE, LOAD, DIR"
 1240 PRINT "Result: PASS"
-1250 INPUT "Press Enter to finish: "; x
+1250 INPUT "Press Enter for next test: "; x
 1260 REM
-1270 REM ===== ALL TESTS COMPLETE =====
-1280 PRINT ""
-1290 PRINT "TEST SUITE COMPLETE!"
-1300 PRINT "OBI-88 BASIC is ready to use."
+1270 REM ===== TEST 13: GOSUB/RETURN SUBROUTINES =====
+1280 PRINT "TEST 13: GOSUB/RETURN SUBROUTINES"
+1290 LET result$=""
+1300 GOSUB 1320
+1310 PRINT "Result: PASS"
+1320 INPUT "Press Enter to finish: "; x
+1330 REM
+1340 REM ===== ALL TESTS COMPLETE =====
+1350 PRINT ""
+1360 PRINT "TEST SUITE COMPLETE!"
+1370 PRINT "OBI-88 BASIC is ready to use."
+1380 END
+1390 REM
+1400 REM ===== SUBROUTINE: Simple test =====
+1410 PRINT "Subroutine called successfully"
+1420 PRINT "About to return to main"
+1430 RETURN
