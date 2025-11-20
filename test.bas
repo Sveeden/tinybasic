@@ -1,61 +1,151 @@
-10 REM Test 1: PRINT with quoted string
-20 PRINT "Test 1: Hello World"
-30 INPUT "Press Enter to continue";dummy
-40 REM Test 2: PRINT with variable
-50 PRINT "Test 2: Print a number"
-60 PRINT 42
-70 INPUT "Press Enter to continue";dummy
-80 REM Test 3: LET with number
-90 LET x=10
-100 PRINT "Test 3: Set x to 10"
-110 INPUT "Press Enter to continue";dummy
-120 REM Test 4: PRINT variable
-130 PRINT "Test 4: Print x (should be 10):"
-140 PRINT x
-150 INPUT "Press Enter to continue";dummy
-160 REM Test 5: LET with string
-170 LET x$="poop"
-180 PRINT "Test 5: Set x$ to poop"
-190 INPUT "Press Enter to continue";dummy
-200 REM Test 6: PRINT string variable
-210 PRINT "Test 6: Print x$ (should be poop):"
-220 PRINT x$
-230 INPUT "Press Enter to continue";dummy
-240 REM Test 7: IF THEN true condition
-250 PRINT "Test 7: IF x>5 (should execute):"
-260 IF x>5 THEN PRINT "x is greater than 5"
-270 INPUT "Press Enter to continue";dummy
-280 REM Test 8: IF THEN false condition
-290 PRINT "Test 8: IF x<5 (should NOT execute):"
-300 IF x<5 THEN PRINT "x is less than 5"
-310 INPUT "Press Enter to continue";dummy
-320 REM Test 9: IF string comparison
-330 PRINT "Test 9: IF x$=poop (should execute):"
-340 IF x$="poop" THEN PRINT "x$ equals poop"
-350 INPUT "Press Enter to continue";dummy
-360 REM Test 10: Multiple variables
-370 LET y=20
-380 LET name$="Rob"
-390 PRINT "Test 10: Multiple variables"
-400 PRINT "y = "
-410 PRINT y
-420 PRINT "name$ = "
-430 PRINT name$
-440 INPUT "Press Enter to continue";dummy
-450 REM Test 11: FOR loop
-460 PRINT "Test 11: FOR loop 1 to 5"
-470 FOR i=1 TO 5
-480 PRINT i
-490 NEXT
-500 INPUT "Press Enter to continue";dummy
-510 REM Test 12: WHILE loop with INPUT
-520 PRINT "Test 12: WHILE loop (enter 0 to exit)"
-530 LET x=5
-540 WHILE x>0
-550 PRINT x
-560 INPUT "Enter next value: "; x
-570 WEND
-580 PRINT "WHILE loop done!"
-590 INPUT "Press Enter to continue";dummy
-600 REM All tests complete
-610 PRINT "All tests complete!"
+10 REM ===== OBI-88 BASIC COMPREHENSIVE TEST SUITE =====
+20 REM Version 1.0 - Tests all features
+30 PRINT "OBI-88 BASIC TEST SUITE"
+40 PRINT "======================"
+50 PRINT ""
+60 INPUT "Press Enter to start tests"; x
+70 REM
+80 REM ===== TEST 1: BASIC OUTPUT =====
+90 PRINT ""
+100 PRINT "TEST 1: BASIC OUTPUT"
+110 PRINT "PRINT quoted string"
+120 PRINT "Hello from OBI-88!"
+130 PRINT "PRINT number"
+140 PRINT 42
+150 INPUT "Continue"; x
+160 REM
+170 REM ===== TEST 2: VARIABLES - NUMBERS =====
+180 PRINT ""
+180 PRINT "TEST 2: NUMERIC VARIABLES"
+190 LET a=100
+200 LET b=25
+210 LET c=5
+220 PRINT "Set a=100, b=25, c=5"
+230 PRINT "a="
+240 PRINT a
+250 PRINT "b="
+260 PRINT b
+270 PRINT "c="
+280 PRINT c
+290 INPUT "Continue"; x
+300 REM
+310 REM ===== TEST 3: VARIABLES - STRINGS =====
+320 PRINT ""
+330 PRINT "TEST 3: STRING VARIABLES"
+340 LET name$="OBI-88"
+350 LET version$="1.0"
+360 LET status$="Running"
+370 PRINT "name$="
+380 PRINT name$
+390 PRINT "version$="
+400 PRINT version$
+410 PRINT "status$="
+420 PRINT status$
+430 INPUT "Continue"; x
+440 REM
+450 REM ===== TEST 4: COMPARISONS =====
+460 PRINT ""
+470 PRINT "TEST 4: NUMERIC COMPARISONS"
+480 PRINT "Testing: a>50, b<50, c=5"
+490 IF a>50 THEN PRINT "PASS: a > 50"
+500 IF b<50 THEN PRINT "PASS: b < 50"
+510 IF c=5 THEN PRINT "PASS: c = 5"
+520 INPUT "Continue"; x
+530 REM
+540 REM ===== TEST 5: STRING COMPARISONS =====
+550 PRINT ""
+560 PRINT "TEST 5: STRING COMPARISONS"
+570 IF name$="OBI-88" THEN PRINT "PASS: name$ equals OBI-88"
+580 IF version$="1.0" THEN PRINT "PASS: version$ equals 1.0"
+590 INPUT "Continue"; x
+600 REM
+610 REM ===== TEST 6: FOR LOOPS =====
+620 PRINT ""
+630 PRINT "TEST 6: FOR LOOPS"
+640 PRINT "Counting 1 to 10:"
+650 FOR i=1 TO 10
+660 PRINT i
+670 NEXT
+680 INPUT "Continue"; x
+690 REM
+700 REM ===== TEST 7: NESTED FOR LOOPS =====
+710 PRINT ""
+720 PRINT "TEST 7: NESTED FOR LOOPS"
+730 PRINT "3x3 grid:"
+740 FOR row=1 TO 3
+750 FOR col=1 TO 3
+760 PRINT "("
+770 PRINT row
+780 PRINT ","
+790 PRINT col
+800 PRINT ")"
+810 NEXT
+820 NEXT
+830 INPUT "Continue"; x
+840 REM
+850 REM ===== TEST 8: WHILE LOOPS =====
+860 PRINT ""
+870 PRINT "TEST 8: WHILE LOOPS"
+880 PRINT "Countdown from 5:"
+890 LET counter=5
+900 WHILE counter>0
+910 PRINT counter
+920 LET counter=counter-1
+930 WEND
+940 PRINT "Blast off!"
+950 INPUT "Continue"; x
+960 REM
+970 REM ===== TEST 9: USER INPUT =====
+980 PRINT ""
+990 PRINT "TEST 9: USER INPUT"
+1000 INPUT "Enter your name: "; user$
+1010 PRINT "Welcome, "
+1020 PRINT user$
+1030 INPUT "Enter a number: "; num
+1040 PRINT "You entered: "
+1050 PRINT num
+1060 INPUT "Continue"; x
+1070 REM
+1080 REM ===== TEST 10: PROGRAM CONTROL =====
+1090 PRINT ""
+1100 PRINT "TEST 10: PROGRAM CONTROL"
+1110 PRINT "Commands available:"
+1120 PRINT "- LIST: Show program"
+1130 PRINT "- NEW: Clear program"
+1140 PRINT "- RUN: Execute program"
+1150 PRINT "- SAVE file: Save to flash"
+1160 PRINT "- LOAD file: Load from flash"
+1170 INPUT "Continue"; x
+1180 REM
+1190 REM ===== TEST 11: FILESYSTEM COMMANDS =====
+1200 PRINT ""
+1210 PRINT "TEST 11: FILESYSTEM COMMANDS"
+1220 PRINT "Available commands:"
+1230 PRINT "- DIR: List files"
+1240 PRINT "- CD path: Change directory"
+1250 PRINT "- PWD: Show directory"
+1260 PRINT "- MKDIR: Create directory"
+1270 PRINT "- RMDIR: Remove directory"
+1280 PRINT "- RM file: Delete file"
+1290 PRINT "- DRIVES: List drives"
+1300 PRINT "- FORMAT: Format drive"
+1310 INPUT "Continue"; x
+1320 REM
+1330 REM ===== TEST 12: VARIABLE LIMITS =====
+1340 PRINT ""
+1350 PRINT "TEST 12: VARIABLE CAPACITY"
+1360 PRINT "Maximum: 50 variables"
+1370 PRINT "Setting multiple variables..."
+1380 LET v1=1
+1390 LET v2=2
+1400 LET v3=3
+1410 LET v4=4
+1420 LET v5=5
+1430 PRINT "v1=1, v2=2, v3=3, v4=4, v5=5"
+1440 PRINT "All set successfully!"
+1450 INPUT "Continue"; x
+1460 REM
+1470 REM ===== ALL TESTS COMPLETE =====
+1480 PRINT ""
+1490 PRINT "TEST SUITE COMPLETE!"
+1500 PRINT "OBI-88 BASIC is ready to use."

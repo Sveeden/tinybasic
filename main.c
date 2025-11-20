@@ -10,6 +10,7 @@
 #include "filesystem.h"
 
 #define LINE_MAX 256
+#define VERSION "1.0.0"
 
 int main() {
     stdio_init_all();
@@ -23,14 +24,15 @@ int main() {
     }
     sleep_ms(500);  // Give terminal time to be ready
 
-    // Print banner one line at a time for reliability
-    printf("\n=== OBI-88 BASIC ===\n"); fflush(stdout); sleep_ms(100);
+    // Print cool ASCII banner with version
+    printf("\n"); fflush(stdout); sleep_ms(100);
+    printf("****************************\n"); fflush(stdout); sleep_ms(100);
+    printf("*    OBI-88 BASIC v%s     *\n", VERSION); fflush(stdout); sleep_ms(100);
+    printf("****************************\n"); fflush(stdout); sleep_ms(100);
+    printf("\n"); fflush(stdout); sleep_ms(100);
     printf("Type commands. Examples:\n"); fflush(stdout); sleep_ms(100);
     printf("  PRINT \"hello\"\n"); fflush(stdout); sleep_ms(100);
-    printf("  LET x=10\n"); fflush(stdout); sleep_ms(100);
-    printf("  PRINT x\n"); fflush(stdout); sleep_ms(100);
-    printf("  IF x>5 THEN PRINT \"big\"\n"); fflush(stdout); sleep_ms(100);
-    printf("\n"); fflush(stdout); sleep_ms(100);
+
     
     // Initialize filesystem
     printf("Initializing filesystem...\n"); fflush(stdout);
