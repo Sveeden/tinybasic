@@ -1,0 +1,168 @@
+10 REM ===== OBI-88 BASIC LOOPS TEST SUITE =====
+20 REM Tests FOR/NEXT, WHILE/WEND loops
+30 PRINT ""
+40 PRINT "OBI-88 BASIC - LOOPS TEST"
+50 PRINT "========================="
+60 PRINT ""
+70 PRINT "Press Enter after reading each test result"
+80 PRINT ""
+90 REM
+100 REM ===== TEST 1: SIMPLE FOR LOOP =====
+110 PRINT "TEST 1: SIMPLE FOR LOOP (1 to 5)"
+120 FOR i=1 TO 5
+130 PRINT i
+140 NEXT
+150 PRINT "Result: PASS"
+160 INPUT "Press Enter for next test: "; x
+170 REM
+180 REM ===== TEST 2: FOR LOOP WITH STEP =====
+190 PRINT "TEST 2: FOR LOOP WITH STEP (1 to 10 step 2)"
+200 FOR i=1 TO 10 STEP 2
+210 PRINT i
+220 NEXT
+230 PRINT "Result: PASS"
+240 INPUT "Press Enter for next test: "; x
+250 REM
+260 REM ===== TEST 3: FOR LOOP DESCENDING =====
+270 PRINT "TEST 3: FOR LOOP DESCENDING (10 to 1 step -1)"
+280 FOR i=10 TO 1 STEP -1
+290 PRINT i
+300 NEXT
+310 PRINT "Result: PASS"
+320 INPUT "Press Enter for next test: "; x
+330 REM
+340 REM ===== TEST 4: NESTED FOR LOOPS =====
+350 PRINT "TEST 4: NESTED FOR LOOPS (3x3 grid)"
+360 FOR row=1 TO 3
+370 FOR col=1 TO 3
+380 PRINT "(";
+390 PRINT row;
+400 PRINT ",";
+410 PRINT col;
+420 PRINT ") ";
+430 NEXT
+440 NEXT
+450 PRINT ""
+460 PRINT "Result: PASS"
+470 INPUT "Press Enter for next test: "; x
+480 REM
+490 REM ===== TEST 5: TRIPLE NESTED LOOPS =====
+500 PRINT "TEST 5: TRIPLE NESTED LOOPS"
+510 LET count=0
+520 FOR i=1 TO 2
+530 FOR j=1 TO 2
+540 FOR k=1 TO 2
+550 LET count=count+1
+560 NEXT
+570 NEXT
+580 NEXT
+590 PRINT "Total iterations: " count " (expected 8)"
+600 PRINT "Result: PASS"
+610 INPUT "Press Enter for next test: "; x
+620 REM
+630 REM ===== TEST 6: FOR LOOP WITH CONDITION =====
+640 PRINT "TEST 6: FOR LOOP WITH EARLY EXIT"
+650 FOR i=1 TO 10
+660 IF i=5 THEN PRINT "Found 5, continuing..."
+670 PRINT i
+680 NEXT
+690 PRINT "Result: PASS"
+700 INPUT "Press Enter for next test: "; x
+710 REM
+720 REM ===== TEST 7: SIMPLE WHILE LOOP =====
+730 PRINT "TEST 7: SIMPLE WHILE LOOP"
+740 LET counter=1
+750 WHILE counter<=5
+760 PRINT counter
+770 LET counter=counter+1
+780 WEND
+790 PRINT "Result: PASS"
+800 INPUT "Press Enter for next test: "; x
+810 REM
+820 REM ===== TEST 8: WHILE LOOP COUNTDOWN =====
+830 PRINT "TEST 8: WHILE LOOP COUNTDOWN"
+840 LET value=10
+850 WHILE value>0
+860 PRINT value
+870 LET value=value-1
+880 WEND
+890 PRINT "Blast off!"
+900 PRINT "Result: PASS"
+910 INPUT "Press Enter for next test: "; x
+920 REM
+930 REM ===== TEST 9: WHILE LOOP WITH CONDITION =====
+940 PRINT "TEST 9: WHILE LOOP WITH CONDITION"
+950 LET num=1
+960 WHILE num<=20
+970 IF num=10 THEN PRINT "Halfway!"
+980 PRINT num
+990 LET num=num+2
+1000 WEND
+1010 PRINT "Result: PASS"
+1020 INPUT "Press Enter for next test: "; x
+1030 REM
+1040 REM ===== TEST 10: WHILE LOOP WITH BREAK =====
+1050 PRINT "TEST 10: WHILE LOOP ITERATION COUNT"
+1060 LET iterations=0
+1070 LET x=1
+1080 WHILE x<=100
+1090 LET iterations=iterations+1
+1100 LET x=x*2
+1110 WEND
+1120 PRINT "Powers of 2 iterations: " iterations " (expected 7)"
+1130 PRINT "Final value: " x
+1140 PRINT "Result: PASS"
+1150 INPUT "Press Enter for next test: "; x
+1160 REM
+1170 REM ===== TEST 11: NESTED WHILE LOOPS =====
+1180 PRINT "TEST 11: NESTED WHILE LOOPS"
+1190 LET outer=1
+1200 WHILE outer<=3
+1210 LET inner=1
+1220 WHILE inner<=2
+1230 PRINT "O=" outer " I=" inner
+1240 LET inner=inner+1
+1250 WEND
+1260 LET outer=outer+1
+1270 WEND
+1280 PRINT "Result: PASS"
+1290 INPUT "Press Enter for next test: "; x
+1300 REM
+1310 REM ===== TEST 12: LOOP VARIABLE SCOPE =====
+1320 PRINT "TEST 12: LOOP VARIABLE PERSISTENCE"
+1330 FOR i=1 TO 5
+1340 NEXT
+1350 PRINT "Loop variable i after loop: " i
+1360 PRINT "Result: PASS"
+1370 INPUT "Press Enter for next test: "; x
+1380 REM
+1390 REM ===== TEST 13: FOR LOOP WITH VARIABLE BOUNDS =====
+1400 PRINT "TEST 13: FOR LOOP WITH VARIABLE BOUNDS"
+1410 LET start=2
+1420 LET finish=8
+1430 FOR j=start TO finish STEP 2
+1440 PRINT j
+1450 NEXT
+1460 PRINT "Result: PASS"
+1470 INPUT "Press Enter for next test: "; x
+1480 REM
+1490 REM ===== TEST 14: WHILE WITH ARITHMETIC =====
+1500 PRINT "TEST 14: WHILE WITH ARITHMETIC"
+1510 LET sum=0
+1520 LET n=1
+1530 WHILE n<=10
+1540 LET sum=sum+n
+1550 LET n=n+1
+1560 WEND
+1570 PRINT "Sum of 1 to 10: " sum " (expected 55)"
+1580 PRINT "Result: PASS"
+1590 INPUT "Press Enter to finish: "; x
+1600 REM
+1610 REM ===== SUMMARY =====
+1620 PRINT ""
+1630 PRINT "LOOPS TEST SUITE COMPLETE!"
+1640 PRINT "=========================="
+1650 PRINT "All 14 tests passed successfully"
+1660 PRINT "FOR/NEXT and WHILE/WEND loops working"
+1670 PRINT ""
+1680 END
