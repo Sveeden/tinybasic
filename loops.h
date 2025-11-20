@@ -25,4 +25,9 @@ void loop_pop(void);
 // Check if there are any active loops
 int loop_has_active(void);
 
+// GOSUB/RETURN stack operations
+void gosub_push_return(int return_line);
+int gosub_pop_return(void);
+int gosub_has_return(void);
+
 #endif

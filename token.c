@@ -576,6 +576,33 @@ Token* tokenize(const char *line, int *token_count) {
         strcpy(tokens[0].value, "CLS");
         *token_count = 1;
     }
+    // Check for GOSUB
+    else if (strncmp(command, "GOSUB", 5) == 0) {
+        tokens[0].type = TOKEN_GOSUB;
+        strcpy(tokens[0].value, "GOSUB");
+        *token_count = 1;
+        
+        // Get target line number
+        line += 5;  // Skip "GOSUB"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        char *dest = tokens[1].value;
+        while (*line && *line != '\0') {
+            *dest++ = *line++;
+        }
+        *dest = '\0';
+        
+        if (strlen(tokens[1].value) > 0) {
+            tokens[1].type = TOKEN_GOSUB;
+            *token_count = 2;
+        }
+    }
+    // Check for RETURN
+    else if (strncmp(command, "RETURN", 6) == 0) {
+        tokens[0].type = TOKEN_RETURN;
+        strcpy(tokens[0].value, "RETURN");
+        *token_count = 1;
+    }
     // Check for implicit LET (e.g., "x=10" without LET keyword)
     else if (strchr(line, '=')) {
         tokens[0].type = TOKEN_LET;

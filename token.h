@@ -28,6 +28,8 @@ typedef enum {
     TOKEN_RMDIR,
     TOKEN_DRIVES,
     TOKEN_CLS,
+    TOKEN_GOSUB,
+    TOKEN_RETURN,
     TOKEN_UNKNOWN,
     TOKEN_EOF,
 } TokenType;

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #define MAX_LOOP_DEPTH 10
+#define MAX_GOSUB_DEPTH 10
 
 typedef enum {
     LOOP_FOR,
@@ -20,6 +21,10 @@ typedef struct {
 
 static LoopInfo loop_stack[MAX_LOOP_DEPTH];
 static int loop_depth = 0;
+
+// GOSUB/RETURN stack
+static int return_stack[MAX_GOSUB_DEPTH];
+static int return_depth = 0;
 
 void loop_init(void) {
     loop_depth = 0;
@@ -108,4 +113,25 @@ void loop_wend_check_pop(int condition) {
             loop_pop();
         }
     }
+}
+
+// GOSUB/RETURN stack operations
+void gosub_push_return(int return_line) {
+    if (return_depth < MAX_GOSUB_DEPTH) {
+        return_stack[return_depth++] = return_line;
+    } else {
+        printf("?GOSUB STACK OVERFLOW\n");
+    }
+}
+
+int gosub_pop_return(void) {
+    if (return_depth > 0) {
+        return return_stack[--return_depth];
+    }
+    printf("?RETURN WITHOUT GOSUB\n");
+    return -1;
+}
+
+int gosub_has_return(void) {
+    return return_depth > 0;
 }

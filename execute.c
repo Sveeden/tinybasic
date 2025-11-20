@@ -495,6 +495,43 @@ int execute(Token* tokens, int token_count, int line_num) {
             printf("\x1B[2J\x1B[H");
             fflush(stdout);
             break;
+        case TOKEN_GOSUB: {
+            // GOSUB target_line
+            if (token_count < 2) {
+                printf("?GOSUB REQUIRES LINE NUMBER\n");
+                break;
+            }
+            
+            int target_line = atoi(tokens[1].value);
+            if (target_line <= 0) {
+                printf("?INVALID LINE NUMBER\n");
+                break;
+            }
+            
+            // Find next line number for return address
+            int return_addr = prog_next_line(line_num);
+            
+            if (return_addr <= 0) {
+                printf("?NO RETURN ADDRESS\n");
+                break;
+            }
+            
+            // Push return address and jump to target
+            gosub_push_return(return_addr);
+            return target_line;  // Jump to GOSUB target
+            break;
+        }
+        case TOKEN_RETURN: {
+            // RETURN - pop return address and jump back
+            if (!gosub_has_return()) {
+                printf("?RETURN WITHOUT GOSUB\n");
+                break;
+            }
+            
+            int return_addr = gosub_pop_return();
+            return return_addr;  // Jump back to return address
+            break;
+        }
         case TOKEN_UNKNOWN:
             printf("Unknown command\n");
             break;
