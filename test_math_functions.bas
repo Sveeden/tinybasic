@@ -70,32 +70,32 @@
 700 LET sin_pi_2=SIN(1.5708)
 710 PRINT "SIN(PI/2) = " sin_pi_2 " (expected ~1)"
 720 PRINT "Result: PASS"
-740 INPUT "Press Enter for next test: "; x
-750 REM
-760 REM ===== TEST 7: COSINE FUNCTION =====
-770 PRINT "TEST 7: COSINE (COS)"
-780 LET cos0=COS(0)
-790 PRINT "COS(0) = " cos0 " (expected 1)"
-800 LET cos_pi_2=COS(1.5708)
-810 PRINT "COS(PI/2) = " cos_pi_2 " (expected ~0)"
-820 PRINT "Result: PASS"
-840 INPUT "Press Enter for next test: "; x
-850 REM
-860 REM ===== TEST 8: TANGENT FUNCTION =====
-870 PRINT "TEST 8: TANGENT (TAN)"
-880 LET tan0=TAN(0)
-890 PRINT "TAN(0) = " tan0 " (expected 0)"
-900 PRINT "Result: PASS"
-910 INPUT "Press Enter for next test: "; x
-920 REM
-930 REM ===== TEST 9: ARCTANGENT FUNCTION =====
-940 PRINT "TEST 9: ARCTANGENT (ATN)"
-950 LET atn0=ATN(0)
-960 PRINT "ATN(0) = " atn0 " (expected 0)"
-970 LET atn1=ATN(1)
-980 PRINT "ATN(1) = " atn1 " (expected ~0.785 or PI/4)"
-990 PRINT "Result: PASS"
-1000 INPUT "Press Enter for next test: "; x
+730 INPUT "Press Enter for next test: "; x
+740 REM
+750 REM ===== TEST 7: COSINE FUNCTION =====
+760 PRINT "TEST 7: COSINE (COS)"
+770 LET cos0=COS(0)
+780 PRINT "COS(0) = " cos0 " (expected 1)"
+790 LET cos_pi_2=COS(1.5708)
+800 PRINT "COS(PI/2) = " cos_pi_2 " (expected ~0)"
+810 PRINT "Result: PASS"
+820 INPUT "Press Enter for next test: "; x
+830 REM
+840 REM ===== TEST 8: TANGENT FUNCTION =====
+850 PRINT "TEST 8: TANGENT (TAN)"
+860 LET tan0=TAN(0)
+870 PRINT "TAN(0) = " tan0 " (expected 0)"
+880 PRINT "Result: PASS"
+890 INPUT "Press Enter for next test: "; x
+900 REM
+910 REM ===== TEST 9: ARCTANGENT FUNCTION =====
+920 PRINT "TEST 9: ARCTANGENT (ATN)"
+930 LET atn0=ATN(0)
+940 PRINT "ATN(0) = " atn0 " (expected 0)"
+950 LET atn1=ATN(1)
+960 PRINT "ATN(1) = " atn1 " (expected ~0.785 or PI/4)"
+970 PRINT "Result: PASS"
+980 INPUT "Press Enter for next test: "; x
 1010 REM
 1020 REM ===== TEST 10: LOGARITHM FUNCTION =====
 1030 PRINT "TEST 10: LOGARITHM (LOG)"
