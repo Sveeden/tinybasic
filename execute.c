@@ -452,7 +452,10 @@ int execute(Token* tokens, int token_count, int line_num) {
                         }
                         int next_line = execute(toks, tc, run_line);
                         free_tokens(toks);
-                        if (next_line >= 0) {
+                        if (next_line == -2) {
+                            // END statement - terminate program execution
+                            break;
+                        } else if (next_line >= 0) {
                             run_line = next_line;  // Jump to specified line
                         } else {
                             run_line = prog_next_line(run_line);  // Continue sequentially
@@ -574,6 +577,11 @@ int execute(Token* tokens, int token_count, int line_num) {
             
             int return_addr = gosub_pop_return();
             return return_addr;  // Jump back to return address
+            break;
+        }
+        case TOKEN_END: {
+            // END - terminate program execution
+            return -2;  // Special return code to signal end of program
             break;
         }
         case TOKEN_UNKNOWN:

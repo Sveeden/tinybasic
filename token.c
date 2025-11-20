@@ -349,6 +349,12 @@ Token* tokenize(const char *line, int *token_count) {
         strcpy(tokens[0].value, "WEND");
         *token_count = 1;
     }
+    // Check for END
+    else if (strncmp(command, "END", 3) == 0) {
+        tokens[0].type = TOKEN_END;
+        strcpy(tokens[0].value, "END");
+        *token_count = 1;
+    }
     // Check for SAVE
     else if (strncmp(command, "SAVE", 4) == 0) {
         tokens[0].type = TOKEN_SAVE;
