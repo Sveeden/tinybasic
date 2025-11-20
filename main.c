@@ -41,7 +41,7 @@ int main() {
     }
     
     // Show memory info (using rough estimates for Pico)
-    printf("Drive memory free: ~1.0 MB\n"); fflush(stdout);
+    printf("Drive memory free: 1015 KB\n"); fflush(stdout);
     printf("Total RAM: 264 KB / RAM free: ~160 KB\n"); fflush(stdout);
     printf("Ready\n"); fflush(stdout);
     printf("\n"); fflush(stdout); sleep_ms(100);
