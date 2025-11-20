@@ -55,8 +55,17 @@ int main() {
             int c = getchar_timeout_us(0);
             if (c == PICO_ERROR_TIMEOUT) continue;
             
-            if (c == '\r') c = '\n';
-            if (c == '\n') {
+            // Check for Ctrl+C (0x03)
+            if (c == 0x03) {
+                printf("\n^C\n");
+                fflush(stdout);
+                line[0] = '\0';
+                len = 0;
+                break;  // Exit input loop, go back to prompt
+            }
+            
+            // Handle Enter key: 0x0D (CR) or 0x0A (LF)
+            if (c == 0x0D || c == 0x0A || c == '\r' || c == '\n') {
                 putchar('\n');
                 line[len] = '\0';
                 break;

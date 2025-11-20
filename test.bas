@@ -13,7 +13,7 @@
 130 PRINT "PRINT number:"
 140 PRINT 42
 150 PRINT "Result: PASS"
-160 INPUT "Press Enter for next test: "; x
+160 INPUT "Press Enter for next test (or type x): "; x
 170 REM
 180 REM ===== TEST 2: VARIABLES - NUMBERS =====
 190 PRINT "TEST 2: NUMERIC VARIABLES"

@@ -185,8 +185,8 @@ static void execute_input(Token* tokens, int token_count) {
             int c = getchar_timeout_us(0);
             if (c == PICO_ERROR_TIMEOUT) continue;
             
-            if (c == '\r') c = '\n';
-            if (c == '\n') {
+            // Handle Enter key: 0x0D (CR) or 0x0A (LF)
+            if (c == 0x0D || c == 0x0A || c == '\r' || c == '\n') {
                 putchar('\n');
                 input_line[len] = '\0';
                 break;
@@ -224,8 +224,16 @@ static void execute_input(Token* tokens, int token_count) {
         
         // Check if input is empty
         if (trim_len == 0) {
-            printf("?SN ERROR\n");
-            continue;  // Re-prompt
+            // For testing purposes, allow empty input
+            // Empty = 0 for numbers, empty string for strings
+            char assign_str[512];
+            if (is_string_var) {
+                snprintf(assign_str, sizeof(assign_str), "%s=\"\"", var_name);
+            } else {
+                snprintf(assign_str, sizeof(assign_str), "%s=0", var_name);
+            }
+            var_set(assign_str);
+            return;
         }
         
         // For numeric variables, validate that input is a number
@@ -480,6 +488,13 @@ int execute(Token* tokens, int token_count, int line_num) {
             break;
         case TOKEN_DRIVES:
             fs_drives();
+            break;
+        case TOKEN_CLS:
+            // Clear screen - output multiple newlines (25 lines)
+            for (int i = 0; i < 25; i++) {
+                printf("\n");
+            }
+            fflush(stdout);
             break;
         case TOKEN_UNKNOWN:
             printf("Unknown command\n");

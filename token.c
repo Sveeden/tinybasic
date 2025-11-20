@@ -570,6 +570,12 @@ Token* tokenize(const char *line, int *token_count) {
         strcpy(tokens[0].value, "DRIVES");
         *token_count = 1;
     }
+    // Check for CLS (clear screen)
+    else if (strncmp(command, "CLS", 3) == 0) {
+        tokens[0].type = TOKEN_CLS;
+        strcpy(tokens[0].value, "CLS");
+        *token_count = 1;
+    }
     // Check for implicit LET (e.g., "x=10" without LET keyword)
     else if (strchr(line, '=')) {
         tokens[0].type = TOKEN_LET;
