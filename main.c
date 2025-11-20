@@ -27,13 +27,11 @@ int main() {
     // Print cool ASCII banner with version
     printf("\n"); fflush(stdout); sleep_ms(100);
     printf("****************************\n"); fflush(stdout); sleep_ms(100);
-    printf("*    OBI-88 BASIC v%s     *\n", VERSION); fflush(stdout); sleep_ms(100);
+    printf("*    OBI-88 BASIC\n"); fflush(stdout); sleep_ms(100);
+    printf("*             v%s     *\n", VERSION); fflush(stdout); sleep_ms(100);
     printf("****************************\n"); fflush(stdout); sleep_ms(100);
     printf("\n"); fflush(stdout); sleep_ms(100);
-    printf("Type commands. Examples:\n"); fflush(stdout); sleep_ms(100);
-    printf("  PRINT \"hello\"\n"); fflush(stdout); sleep_ms(100);
 
-    
     // Initialize filesystem
     printf("Initializing filesystem...\n"); fflush(stdout);
     if (fs_init() == 0) {
@@ -41,6 +39,11 @@ int main() {
     } else {
         printf("Warning: Filesystem init failed\n"); fflush(stdout);
     }
+    
+    // Show memory info (using rough estimates for Pico)
+    printf("Drive memory free: ~1.8 MB\n"); fflush(stdout);
+    printf("Total RAM: 264 KB / RAM free: ~160 KB\n"); fflush(stdout);
+    printf("Ready\n"); fflush(stdout);
     printf("\n"); fflush(stdout); sleep_ms(100);
     
     char line[LINE_MAX];

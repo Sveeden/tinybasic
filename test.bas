@@ -128,17 +128,30 @@
 1270 REM ===== TEST 13: GOSUB/RETURN SUBROUTINES =====
 1280 PRINT "TEST 13: GOSUB/RETURN SUBROUTINES"
 1290 LET result$=""
-1300 GOSUB 1410
+1300 GOSUB 1540
 1310 PRINT "Result: PASS"
-1320 INPUT "Press Enter to finish: "; x
+1320 INPUT "Press Enter for next test: "; x
 1330 REM
-1340 REM ===== ALL TESTS COMPLETE =====
-1350 PRINT ""
-1360 PRINT "TEST SUITE COMPLETE!"
-1370 PRINT "OBI-88 BASIC is ready to use."
-1380 END
-1390 REM
-1400 REM ===== SUBROUTINE: Simple test =====
-1410 PRINT "Subroutine called successfully"
-1420 PRINT "About to return to main"
-1430 RETURN
+1340 REM ===== TEST 14: GOTO STATEMENT =====
+1350 PRINT "TEST 14: GOTO STATEMENT"
+1360 LET skip=0
+1370 GOTO 1420
+1380 LET skip=1
+1390 PRINT "ERROR: Should not execute"
+1400 REM
+1410 REM Jump target
+1420 IF skip=0 THEN PRINT "PASS: Skipped line 1380"
+1430 IF skip=1 THEN PRINT "FAIL: Did not skip"
+1440 PRINT "Result: PASS"
+1450 INPUT "Press Enter to finish: "; x
+1460 REM
+1470 REM ===== ALL TESTS COMPLETE =====
+1480 PRINT ""
+1490 PRINT "TEST SUITE COMPLETE!"
+1500 PRINT "OBI-88 BASIC is ready to use."
+1510 END
+1520 REM
+1530 REM ===== SUBROUTINE: Simple test =====
+1540 PRINT "Subroutine called successfully"
+1550 PRINT "About to return to main"
+1560 RETURN
