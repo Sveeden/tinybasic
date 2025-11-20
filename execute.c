@@ -568,6 +568,24 @@ int execute(Token* tokens, int token_count, int line_num) {
             return target_line;  // Jump to GOSUB target
             break;
         }
+        case TOKEN_GOTO: {
+            // GOTO - unconditional jump to target line
+            if (token_count < 2) {
+                printf("?GOTO REQUIRES LINE NUMBER\n");
+                break;
+            }
+            
+            int target_line = atoi(tokens[1].value);
+            
+            // Validate target line exists
+            if (prog_get_line(target_line) == NULL) {
+                printf("?UNDEF'D STATEMENT %d\n", target_line);
+                break;
+            }
+            
+            return target_line;  // Jump to target line
+            break;
+        }
         case TOKEN_RETURN: {
             // RETURN - pop return address and jump back
             if (!gosub_has_return()) {

@@ -611,6 +611,27 @@ Token* tokenize(const char *line, int *token_count) {
             *token_count = 2;
         }
     }
+    // Check for GOTO
+    else if (strncmp(command, "GOTO", 4) == 0) {
+        tokens[0].type = TOKEN_GOTO;
+        strcpy(tokens[0].value, "GOTO");
+        *token_count = 1;
+        
+        // Get target line number
+        line += 4;  // Skip "GOTO"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        char *dest = tokens[1].value;
+        while (*line && *line != '\0') {
+            *dest++ = *line++;
+        }
+        *dest = '\0';
+        
+        if (strlen(tokens[1].value) > 0) {
+            tokens[1].type = TOKEN_GOTO;
+            *token_count = 2;
+        }
+    }
     // Check for RETURN
     else if (strncmp(command, "RETURN", 6) == 0) {
         tokens[0].type = TOKEN_RETURN;

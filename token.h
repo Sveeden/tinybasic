@@ -30,6 +30,7 @@ typedef enum {
     TOKEN_CLS,
     TOKEN_GOSUB,
     TOKEN_RETURN,
+    TOKEN_GOTO,
     TOKEN_END,
     TOKEN_UNKNOWN,
     TOKEN_EOF,
