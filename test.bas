@@ -3,7 +3,7 @@
 30 PRINT "OBI-88 BASIC TEST SUITE"
 40 PRINT "======================"
 50 PRINT ""
-60 INPUT "Press Enter to start tests: "; dummy
+60 PRINT "Starting tests..."
 70 REM
 80 REM ===== TEST 1: BASIC OUTPUT =====
 90 PRINT ""
@@ -12,7 +12,7 @@
 120 PRINT "Hello from OBI-88!"
 130 PRINT "PRINT number"
 140 PRINT 42
-150 INPUT "Continue: "; dummy
+150 PRINT "---"
 160 REM
 170 REM ===== TEST 2: VARIABLES - NUMBERS =====
 180 PRINT ""
@@ -27,7 +27,7 @@
 260 PRINT b
 270 PRINT "c="
 280 PRINT c
-290 INPUT "Continue: "; dummy
+290 PRINT "---"
 300 REM
 310 REM ===== TEST 3: VARIABLES - STRINGS =====
 320 PRINT ""
@@ -41,7 +41,7 @@
 400 PRINT version$
 410 PRINT "status$="
 420 PRINT status$
-430 INPUT "Continue: "; dummy
+430 PRINT "---"
 440 REM
 450 REM ===== TEST 4: COMPARISONS =====
 460 PRINT ""
@@ -50,14 +50,14 @@
 490 IF a>50 THEN PRINT "PASS: a > 50"
 500 IF b<50 THEN PRINT "PASS: b < 50"
 510 IF c=5 THEN PRINT "PASS: c = 5"
-520 INPUT "Continue: "; dummy
+520 PRINT "---"
 530 REM
 540 REM ===== TEST 5: STRING COMPARISONS =====
 550 PRINT ""
 560 PRINT "TEST 5: STRING COMPARISONS"
 570 IF name$="OBI-88" THEN PRINT "PASS: name$ equals OBI-88"
 580 IF version$="1.0" THEN PRINT "PASS: version$ equals 1.0"
-590 INPUT "Continue: "; dummy
+590 PRINT "---"
 600 REM
 610 REM ===== TEST 6: FOR LOOPS =====
 620 PRINT ""
@@ -66,7 +66,7 @@
 650 FOR i=1 TO 10
 660 PRINT i
 670 NEXT
-680 INPUT "Continue: "; dummy
+680 PRINT "---"
 690 REM
 700 REM ===== TEST 7: NESTED FOR LOOPS =====
 710 PRINT ""
@@ -81,7 +81,7 @@
 800 PRINT ")"
 810 NEXT
 820 NEXT
-830 INPUT "Continue: "; dummy
+830 PRINT "---"
 840 REM
 850 REM ===== TEST 8: WHILE LOOPS =====
 860 PRINT ""
@@ -93,7 +93,7 @@
 920 LET counter=counter-1
 930 WEND
 940 PRINT "Blast off!"
-950 INPUT "Continue: "; dummy
+950 PRINT "---"
 960 REM
 970 REM ===== TEST 9: USER INPUT =====
 980 PRINT ""
@@ -104,7 +104,7 @@
 1030 INPUT "Enter a number: "; num
 1040 PRINT "You entered: "
 1050 PRINT num
-1060 INPUT "Continue: "; dummy
+1060 PRINT "---"
 1070 REM
 1080 REM ===== TEST 10: PROGRAM CONTROL =====
 1090 PRINT ""
@@ -115,7 +115,7 @@
 1140 PRINT "- RUN: Execute program"
 1150 PRINT "- SAVE file: Save to flash"
 1160 PRINT "- LOAD file: Load from flash"
-1170 INPUT "Continue: "; dummy
+1170 PRINT "---"
 1180 REM
 1190 REM ===== TEST 11: FILESYSTEM COMMANDS =====
 1200 PRINT ""
@@ -129,7 +129,7 @@
 1280 PRINT "- RM file: Delete file"
 1290 PRINT "- DRIVES: List drives"
 1300 PRINT "- FORMAT: Format drive"
-1310 INPUT "Continue: "; dummy
+1310 PRINT "---"
 1320 REM
 1330 REM ===== TEST 12: VARIABLE LIMITS =====
 1340 PRINT ""
@@ -143,7 +143,7 @@
 1420 LET v5=5
 1430 PRINT "v1=1, v2=2, v3=3, v4=4, v5=5"
 1440 PRINT "All set successfully!"
-1450 INPUT "Continue: "; dummy
+1450 PRINT "---"
 1460 REM
 1470 REM ===== ALL TESTS COMPLETE =====
 1480 PRINT ""
