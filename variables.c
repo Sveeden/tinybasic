@@ -1,4 +1,5 @@
 #include "variables.h"
+#include "math.h"
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -72,71 +73,17 @@ void var_set(const char *assignment) {
         *dest = '\0';
         is_string = 1;
     } else {
-        // Try to evaluate as expression (variable +/- number or variable)
-        strcpy(value, val_start);
+        // Use math expression evaluator for numeric expressions
+        int error = 0;
+        float result = evaluate_math_expression(val_start, &error);
         
-        // Look for arithmetic operators
-        char *plus = strchr(value, '+');
-        char *minus = strchr(value, '-');
-        char *mult = strchr(value, '*');
-        char *divv = strchr(value, '/');
-        
-        // Find the first operator (excluding leading minus)
-        char *op = NULL;
-        char op_char = '\0';
-        if (plus) { op = plus; op_char = '+'; }
-        if (minus && minus != value && (!op || minus < op)) { op = minus; op_char = '-'; }
-        if (mult && (!op || mult < op)) { op = mult; op_char = '*'; }
-        if (divv && (!op || divv < op)) { op = divv; op_char = '/'; }
-        
-        if (op) {
-            // Parse left operand
-            char left_str[256];
-            strncpy(left_str, value, op - value);
-            left_str[op - value] = '\0';
-            
-            // Trim spaces
-            len = strlen(left_str);
-            while (len > 0 && left_str[len - 1] == ' ') left_str[--len] = '\0';
-            len = strlen(left_str);
-            while (len > 0 && left_str[0] == ' ') {
-                memmove(left_str, left_str + 1, strlen(left_str));
-                len--;
-            }
-            
-            // Parse right operand
-            char right_str[256];
-            strcpy(right_str, op + 1);
-            
-            // Trim spaces
-            len = strlen(right_str);
-            while (len > 0 && right_str[0] == ' ') {
-                memmove(right_str, right_str + 1, strlen(right_str));
-                len--;
-            }
-            len = strlen(right_str);
-            while (len > 0 && right_str[len - 1] == ' ') right_str[--len] = '\0';
-            
-            // Get numeric values
-            const char *left_val_str = var_get(left_str);
-            if (left_val_str == NULL) left_val_str = left_str;
-            int left_val = atoi(left_val_str);
-            
-            const char *right_val_str = var_get(right_str);
-            if (right_val_str == NULL) right_val_str = right_str;
-            int right_val = atoi(right_val_str);
-            
-            // Perform operation
-            int result = 0;
-            switch (op_char) {
-                case '+': result = left_val + right_val; break;
-                case '-': result = left_val - right_val; break;
-                case '*': result = left_val * right_val; break;
-                case '/': result = right_val != 0 ? left_val / right_val : 0; break;
-            }
-            
-            snprintf(value, sizeof(value), "%d", result);
+        if (!error) {
+            // Successfully evaluated as math expression
+            snprintf(value, sizeof(value), "%.6g", result);
             is_string = 0;
+        } else {
+            // If evaluation failed, treat as string or just copy the value
+            strcpy(value, val_start);
         }
     }
     

@@ -145,11 +145,43 @@
 1440 PRINT "Result: PASS"
 1450 INPUT "Press Enter to finish: "; x
 1460 REM
-1470 REM ===== ALL TESTS COMPLETE =====
-1480 PRINT ""
-1490 PRINT "TEST SUITE COMPLETE!"
-1500 PRINT "OBI-88 BASIC is ready to use."
-1510 END
+1470 REM ===== TEST 15: MATH FUNCTIONS =====
+1470 PRINT "TEST 15: MATH FUNCTIONS"
+1475 LET pi=3.14159
+1476 PRINT "Single-argument functions:"
+1477 LET abs_neg=ABS(-5)
+1478 PRINT "ABS(-5)=" abs_neg
+1479 LET int_val=INT(3.7)
+1480 PRINT "INT(3.7)=" int_val
+1481 LET sqr_val=SQR(16)
+1482 PRINT "SQR(16)=" sqr_val
+1483 LET sgn_val=SGN(-5)
+1484 PRINT "SGN(-5)=" sgn_val
+1485 PRINT "Multi-argument functions:"
+1486 LET max_val=MAX(10,20)
+1487 PRINT "MAX(10,20)=" max_val
+1488 LET min_val=MIN(10,20)
+1489 PRINT "MIN(10,20)=" min_val
+1490 LET pow_val=POWER(2,3)
+1491 PRINT "POWER(2,3)=" pow_val
+1492 LET mod_val=MOD(7,3)
+1493 PRINT "MOD(7,3)=" mod_val
+1494 PRINT "Trigonometric functions:"
+1495 LET sin_val=SIN(0)
+1496 PRINT "SIN(0)=" sin_val
+1497 LET cos_val=COS(0)
+1498 PRINT "COS(0)=" cos_val
+1499 PRINT "Constants:"
+1500 LET pi_val=PI
+1501 PRINT "PI=" pi_val
+1502 PRINT "Result: PASS"
+1503 INPUT "Press Enter to finish: "; x
+1504 REM
+1505 REM ===== ALL TESTS COMPLETE =====
+1506 PRINT ""
+1507 PRINT "TEST SUITE COMPLETE!"
+1508 PRINT "OBI-88 BASIC is ready to use."
+1509 END
 1520 REM
 1530 REM ===== SUBROUTINE: Simple test =====
 1540 PRINT "Subroutine called successfully"
