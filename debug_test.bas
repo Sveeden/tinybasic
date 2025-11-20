@@ -1,0 +1,6 @@
+100 PRINT "Before INPUT"
+110 INPUT "Press Enter: "; x
+120 PRINT "After INPUT"
+130 PRINT "TEST 10"
+140 END
+
