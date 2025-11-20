@@ -95,7 +95,6 @@ static void execute_print(Token* tokens, int token_count) {
 static void execute_let(Token* tokens, int token_count) {
     if (token_count < 2) return;
     var_set(tokens[1].value);
-    printf("OK\n");
 }
 
 static int evaluate_condition(const char *condition) {
