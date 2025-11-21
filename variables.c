@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
+#include "pico/time.h"
 
 #define MAX_VARS 50
 #define MAX_VAR_NAME 50
@@ -74,6 +75,10 @@ void var_set(const char *assignment) {
     for (int i = 0; i < len; i++) {
         name[i] = toupper(name[i]);
     }
+    // Prevent assigning to read-only system variable TIMER
+    if (strcmp(name, "TIMER") == 0) {
+        return; // ignore attempts to set TIMER
+    }
     
     // Check if it's a string variable (ends with $)
     if (len > 0 && name[len - 1] == '$') {
@@ -141,6 +146,14 @@ const char* var_get(const char *name) {
     for (int i = 0; upper_name[i]; i++) {
         upper_name[i] = toupper(upper_name[i]);
     }
+    // Special system variable: TIMER returns milliseconds since boot
+    if (strcmp(upper_name, "TIMER") == 0) {
+        static char timer_value[32];
+        uint64_t ms = to_ms_since_boot(get_absolute_time());
+        snprintf(timer_value, sizeof(timer_value), "%llu", (unsigned long long)ms);
+        return timer_value;
+    }
+
     int idx = find_var(upper_name);
     if (idx >= 0) {
         return vars[idx].value;
@@ -155,6 +168,9 @@ int var_is_string(const char *name) {
     for (int i = 0; upper_name[i]; i++) {
         upper_name[i] = toupper(upper_name[i]);
     }
+    // TIMER is numeric, not a string
+    if (strcmp(upper_name, "TIMER") == 0) return 0;
+
     int idx = find_var(upper_name);
     if (idx >= 0) {
         return vars[idx].is_string;
@@ -169,9 +185,18 @@ int var_is_number(const char *name) {
     for (int i = 0; upper_name[i]; i++) {
         upper_name[i] = toupper(upper_name[i]);
     }
+    // TIMER is a number
+    if (strcmp(upper_name, "TIMER") == 0) return 1;
+
     int idx = find_var(upper_name);
     if (idx >= 0) {
         return !vars[idx].is_string;
     }
     return 0;
 }
+
+void var_clear_all(void) {
+    var_count = 0;
+    memset(vars, 0, sizeof(vars));
+}
+

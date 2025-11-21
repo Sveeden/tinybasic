@@ -3,6 +3,7 @@
 30 PRINT "OBI-88 BASIC TEST SUITE"
 40 PRINT "======================"
 50 PRINT ""
+55 PRINT "Note: Press CTRL+C at any INPUT prompt to exit"
 60 PRINT "Press Enter after reading each test result"
 70 PRINT ""
 80 REM
@@ -63,15 +64,11 @@
 630 PRINT "TEST 7: NESTED FOR LOOPS (3x3)"
 640 FOR row=1 TO 3
 650 FOR col=1 TO 3
-660 PRINT "(";
-670 PRINT row;
-680 PRINT ",";
-690 PRINT col;
-700 PRINT ") ";
-710 NEXT
-720 NEXT
-730 PRINT ""
-740 PRINT "Result: PASS"
+660 PRINT "(" row "," col ") ";
+680 NEXT
+690 NEXT
+700 PRINT ""
+710 PRINT "Result: PASS"
 745 INPUT "Press Enter for next test: "; x
 750 REM
 760 REM ===== TEST 8: WHILE LOOPS =====

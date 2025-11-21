@@ -14,4 +14,7 @@ int execute(Token* tokens, int token_count, int line_num);
 // Check if execution should be interrupted and clear the flag
 int should_stop_execution(void);
 
+// Execute one or more direct-mode statements (handles ':' separators)
+void execute_line_direct(const char *line_text);
+
 #endif

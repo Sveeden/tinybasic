@@ -33,6 +33,7 @@ typedef enum {
     TOK_MAX,
     TOK_MIN,
     TOK_PI,
+    TOK_RND,
 } TokenType;
 
 typedef struct {

@@ -14,6 +14,7 @@ typedef struct {
 
 static ProgramLine program[MAX_LINES];
 static int line_count = 0;
+static int auto_line_num = 10;  // Current AUTO line number (default 10)
 
 void prog_init(void) {
     line_count = 0;
@@ -145,3 +146,138 @@ int prog_get_memory_used(void) {
     }
     return used;
 }
+
+int prog_get_auto_line_number(void) {
+    return auto_line_num;
+}
+
+void prog_set_auto_line_number(int line_num) {
+    auto_line_num = line_num;
+}
+
+void prog_increment_auto_line_number(int step) {
+    auto_line_num += step;
+}
+
+void prog_renumber(int step) {
+    if (line_count == 0) {
+        return;
+    }
+    
+    // Create mapping of old line numbers to new line numbers
+    int old_lines[MAX_LINES];
+    int new_lines[MAX_LINES];
+    int new_line_num = step;
+    
+    // Build the mapping
+    for (int i = 0; i < line_count; i++) {
+        old_lines[i] = program[i].line_num;
+        new_lines[i] = new_line_num;
+        new_line_num += step;
+    }
+    
+    // Update GOTO and GOSUB references in all lines
+    for (int i = 0; i < line_count; i++) {
+        char new_text[MAX_LINE_LENGTH];
+        strcpy(new_text, program[i].text);
+        
+        // Find and replace GOTO and GOSUB line numbers
+        char *cmd = new_text;
+        
+        // Look for GOTO or GOSUB
+        while (*cmd) {
+            // Skip whitespace
+            while (*cmd == ' ' || *cmd == '\t') cmd++;
+            
+            // Check for GOTO
+            if (strncmp(cmd, "GOTO", 4) == 0) {
+                cmd += 4;
+                while (*cmd == ' ' || *cmd == '\t') cmd++;
+                
+                // Parse the line number
+                if (isdigit(*cmd)) {
+                    int old_target = atoi(cmd);
+                    
+                    // Find the mapping for this line number
+                    int new_target = -1;
+                    for (int j = 0; j < line_count; j++) {
+                        if (old_lines[j] == old_target) {
+                            new_target = new_lines[j];
+                            break;
+                        }
+                    }
+                    
+                    if (new_target != -1) {
+                        // Replace the line number
+                        char before[256];
+                        char after[256];
+                        int cmd_start = cmd - new_text;
+                        
+                        // Copy everything before the line number
+                        strncpy(before, new_text, cmd_start);
+                        before[cmd_start] = '\0';
+                        
+                        // Skip old line number
+                        while (*cmd && isdigit(*cmd)) cmd++;
+                        
+                        // Copy everything after
+                        strcpy(after, cmd);
+                        
+                        // Rebuild the line
+                        snprintf(new_text, MAX_LINE_LENGTH, "%s%d%s", before, new_target, after);
+                        cmd = new_text + cmd_start;
+                    }
+                }
+            }
+            // Check for GOSUB
+            else if (strncmp(cmd, "GOSUB", 5) == 0) {
+                cmd += 5;
+                while (*cmd == ' ' || *cmd == '\t') cmd++;
+                
+                // Parse the line number
+                if (isdigit(*cmd)) {
+                    int old_target = atoi(cmd);
+                    
+                    // Find the mapping for this line number
+                    int new_target = -1;
+                    for (int j = 0; j < line_count; j++) {
+                        if (old_lines[j] == old_target) {
+                            new_target = new_lines[j];
+                            break;
+                        }
+                    }
+                    
+                    if (new_target != -1) {
+                        // Replace the line number
+                        char before[256];
+                        char after[256];
+                        int cmd_start = cmd - new_text;
+                        
+                        // Copy everything before the line number
+                        strncpy(before, new_text, cmd_start);
+                        before[cmd_start] = '\0';
+                        
+                        // Skip old line number
+                        while (*cmd && isdigit(*cmd)) cmd++;
+                        
+                        // Copy everything after
+                        strcpy(after, cmd);
+                        
+                        // Rebuild the line
+                        snprintf(new_text, MAX_LINE_LENGTH, "%s%d%s", before, new_target, after);
+                        cmd = new_text + cmd_start;
+                    }
+                }
+            }
+            else {
+                // Move to next token
+                while (*cmd && *cmd != ' ' && *cmd != '\t') cmd++;
+            }
+        }
+        
+        // Update the line with modified text
+        strcpy(program[i].text, new_text);
+        program[i].line_num = new_lines[i];
+    }
+}
+

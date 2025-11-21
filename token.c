@@ -12,6 +12,25 @@ static void to_upper(char *str) {
     }
 }
 
+static void trim_whitespace(char *str) {
+    if (!str) return;
+    char *start = str;
+    while (*start && isspace((unsigned char)*start)) {
+        start++;
+    }
+
+    char *end = start + strlen(start);
+    while (end > start && isspace((unsigned char)*(end - 1))) {
+        end--;
+    }
+
+    size_t len = (size_t)(end - start);
+    if (start != str) {
+        memmove(str, start, len);
+    }
+    str[len] = '\0';
+}
+
 Token* tokenize(const char *line, int *token_count) {
     Token* tokens = malloc(sizeof(Token) * 10);
     *token_count = 0;
@@ -201,7 +220,7 @@ Token* tokenize(const char *line, int *token_count) {
         
         // Check if there's a quoted prompt: INPUT "msg";var
         char prompt[256] = "? ";
-        char var_name[256];
+        char var_name[256] = "";
         
         if (*line == '"') {
             // Has a prompt
@@ -219,7 +238,7 @@ Token* tokenize(const char *line, int *token_count) {
                 line++;
             }
             
-            if (*line == ';') {
+            if (*line == ';' || *line == ',') {
                 line++;  // Skip semicolon
                 while (*line == ' ' || *line == '\t') {
                     line++;
@@ -231,6 +250,8 @@ Token* tokenize(const char *line, int *token_count) {
             // No prompt, just variable name
             strcpy(var_name, line);
         }
+
+        trim_whitespace(var_name);
         
         // Store prompt in token[1] and variable name in token[2]
         strcpy(tokens[1].value, prompt);
@@ -667,6 +688,57 @@ Token* tokenize(const char *line, int *token_count) {
             *token_count = 2;
         }
     }
+    // Check for ON...GOTO / ON...GOSUB
+    else if (strncmp(command, "ON", 2) == 0) {
+        tokens[0].type = TOKEN_ON;
+        strcpy(tokens[0].value, "ON");
+        line += 2;  // Skip "ON"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the expression (e.g., "n" or "x+1")
+        char *dest = tokens[1].value;
+        while (*line && *line != '\0' && !isspace(*line)) {
+            *dest++ = *line++;
+        }
+        *dest = '\0';
+        tokens[1].type = TOKEN_ON;
+        
+        // Skip whitespace
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Check for GOTO or GOSUB
+        char cmd_upper[256];
+        strcpy(cmd_upper, line);
+        to_upper(cmd_upper);
+        
+        if (strncmp(cmd_upper, "GOTO", 4) == 0) {
+            line += 4;  // Skip "GOTO"
+            tokens[2].type = TOKEN_GOTO;
+            strcpy(tokens[2].value, "GOTO");
+        } else if (strncmp(cmd_upper, "GOSUB", 5) == 0) {
+            line += 5;  // Skip "GOSUB"
+            tokens[2].type = TOKEN_GOSUB;
+            strcpy(tokens[2].value, "GOSUB");
+        } else {
+            tokens[0].type = TOKEN_UNKNOWN;
+            strcpy(tokens[0].value, "ON requires GOTO or GOSUB");
+            *token_count = 1;
+            return tokens;
+        }
+        
+        // Skip whitespace
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the line numbers (comma-separated)
+        dest = tokens[3].value;
+        while (*line && *line != '\0') {
+            *dest++ = *line++;
+        }
+        *dest = '\0';
+        tokens[3].type = TOKEN_ON;
+        
+        *token_count = 4;
+    }
     // Check for GOTO
     else if (strncmp(command, "GOTO", 4) == 0) {
         tokens[0].type = TOKEN_GOTO;
@@ -693,6 +765,246 @@ Token* tokenize(const char *line, int *token_count) {
         tokens[0].type = TOKEN_RETURN;
         strcpy(tokens[0].value, "RETURN");
         *token_count = 1;
+    }
+    // Check for AUTO
+    else if (strncmp(command, "AUTO", 4) == 0) {
+        tokens[0].type = TOKEN_AUTO;
+        strcpy(tokens[0].value, "AUTO");
+        line += 4;  // Skip "AUTO"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get optional starting line number (default 10)
+        if (*line != '\0' && isdigit(*line)) {
+            char *dest = tokens[1].value;
+            while (*line && isdigit(*line)) {
+                *dest++ = *line++;
+            }
+            *dest = '\0';
+            tokens[1].type = TOKEN_AUTO;
+            *token_count = 2;
+        } else {
+            strcpy(tokens[1].value, "10");
+            tokens[1].type = TOKEN_AUTO;
+            *token_count = 2;
+        }
+    }
+    // Check for RENUM
+    else if (strncmp(command, "RENUM", 5) == 0) {
+        tokens[0].type = TOKEN_RENUM;
+        strcpy(tokens[0].value, "RENUM");
+        line += 5;  // Skip "RENUM"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get optional step parameter (default 10)
+        if (*line != '\0' && isdigit(*line)) {
+            char *dest = tokens[1].value;
+            while (*line && isdigit(*line)) {
+                *dest++ = *line++;
+            }
+            *dest = '\0';
+            tokens[1].type = TOKEN_RENUM;
+            *token_count = 2;
+        } else {
+            strcpy(tokens[1].value, "10");
+            tokens[1].type = TOKEN_RENUM;
+            *token_count = 2;
+        }
+    }
+    // Check for EDIT
+    else if (strncmp(command, "EDIT", 4) == 0) {
+        tokens[0].type = TOKEN_EDIT;
+        strcpy(tokens[0].value, "EDIT");
+        line += 4;  // Skip "EDIT"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the line number to edit
+        if (*line != '\0' && isdigit(*line)) {
+            char *dest = tokens[1].value;
+            while (*line && isdigit(*line)) {
+                *dest++ = *line++;
+            }
+            *dest = '\0';
+            tokens[1].type = TOKEN_EDIT;
+            *token_count = 2;
+        } else {
+            tokens[0].type = TOKEN_UNKNOWN;
+            strcpy(tokens[0].value, "EDIT requires a line number");
+            *token_count = 1;
+        }
+    }
+    // Check for SNIPPET
+    else if (strncmp(command, "SNIPPET", 7) == 0) {
+        tokens[0].type = TOKEN_SNIPPET;
+        strcpy(tokens[0].value, "SNIPPET");
+        line += 7;  // Skip "SNIPPET"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the topic name (required)
+        if (*line != '\0') {
+            char *dest = tokens[1].value;
+            while (*line && *line != ' ' && *line != '\t') {
+                *dest++ = *line++;
+            }
+            *dest = '\0';
+            tokens[1].type = TOKEN_SNIPPET;
+            *token_count = 2;
+        } else {
+            tokens[0].type = TOKEN_UNKNOWN;
+            strcpy(tokens[0].value, "SNIPPET requires a command name");
+            *token_count = 1;
+        }
+    }
+    // Check for RANDOMIZE
+    else if (strncmp(command, "RANDOMIZE", 9) == 0) {
+        tokens[0].type = TOKEN_RANDOMIZE;
+        strcpy(tokens[0].value, "RANDOMIZE");
+        line += 9;  // Skip "RANDOMIZE"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get optional seed value
+        if (*line != '\0' && isdigit(*line)) {
+            char *dest = tokens[1].value;
+            while (*line && isdigit(*line)) {
+                *dest++ = *line++;
+            }
+            *dest = '\0';
+            tokens[1].type = TOKEN_RANDOMIZE;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for BEEP
+    else if (strncmp(command, "BEEP", 4) == 0) {
+        tokens[0].type = TOKEN_BEEP;
+        strcpy(tokens[0].value, "BEEP");
+        *token_count = 1;
+    }
+    // Check for CLEAR
+    else if (strncmp(command, "CLEAR", 5) == 0) {
+        tokens[0].type = TOKEN_CLEAR;
+        strcpy(tokens[0].value, "CLEAR");
+        *token_count = 1;
+    }
+    // Check for DIM
+    else if (strncmp(command, "DIM", 3) == 0) {
+        tokens[0].type = TOKEN_DIM;
+        strcpy(tokens[0].value, "DIM");
+        line += 3;  // Skip "DIM"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the array declaration
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_DIM;
+            *token_count = 2;
+        } else {
+            tokens[0].type = TOKEN_UNKNOWN;
+            strcpy(tokens[0].value, "DIM requires array name");
+            *token_count = 1;
+        }
+    }
+    // Check for DATA
+    else if (strncmp(command, "DATA", 4) == 0) {
+        tokens[0].type = TOKEN_DATA;
+        strcpy(tokens[0].value, "DATA");
+        line += 4;  // Skip "DATA"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the data values
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_DATA;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for READ
+    else if (strncmp(command, "READ", 4) == 0) {
+        tokens[0].type = TOKEN_READ;
+        strcpy(tokens[0].value, "READ");
+        line += 4;  // Skip "READ"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the variable names
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_READ;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for RESTORE
+    else if (strncmp(command, "RESTORE", 7) == 0) {
+        tokens[0].type = TOKEN_RESTORE;
+        strcpy(tokens[0].value, "RESTORE");
+        *token_count = 1;
+    }
+    // Check for OPEN
+    else if (strncmp(command, "OPEN", 4) == 0) {
+        tokens[0].type = TOKEN_OPEN;
+        strcpy(tokens[0].value, "OPEN");
+        line += 4;  // Skip "OPEN"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the OPEN parameters
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_OPEN;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for CLOSE
+    else if (strncmp(command, "CLOSE", 5) == 0) {
+        tokens[0].type = TOKEN_CLOSE;
+        strcpy(tokens[0].value, "CLOSE");
+        line += 5;  // Skip "CLOSE"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get the file number
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_CLOSE;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for PRINT#
+    else if (strncmp(command, "PRINT#", 6) == 0) {
+        tokens[0].type = TOKEN_PRINT_HASH;
+        strcpy(tokens[0].value, "PRINT#");
+        line += 6;  // Skip "PRINT#"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get file number and data
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_PRINT_HASH;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
+    }
+    // Check for INPUT#
+    else if (strncmp(command, "INPUT#", 6) == 0) {
+        tokens[0].type = TOKEN_INPUT_HASH;
+        strcpy(tokens[0].value, "INPUT#");
+        line += 6;  // Skip "INPUT#"
+        while (*line == ' ' || *line == '\t') line++;
+        
+        // Get file number and variable
+        if (*line != '\0') {
+            strcpy(tokens[1].value, line);
+            tokens[1].type = TOKEN_INPUT_HASH;
+            *token_count = 2;
+        } else {
+            *token_count = 1;
+        }
     }
     // Check for HELP
     else if (strncmp(command, "HELP", 4) == 0) {

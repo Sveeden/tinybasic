@@ -16,4 +16,7 @@ int var_is_string(const char *name);
 // Check if variable is a number
 int var_is_number(const char *name);
 
+// Clear all variables
+void var_clear_all(void);
+
 #endif

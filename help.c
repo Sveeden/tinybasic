@@ -11,6 +11,9 @@ static const HelpEntry help_entries[] = {
     {"LOAD", "Program Control", "LOAD \"program.bas\"", "", ""},
     {"SAVE", "Program Control", "SAVE \"program.bas\"", "", ""},
     {"LIST", "Program Control", "LIST", "10 PRINT \"LINE 10\"", "20 PRINT \"LINE 20\""},
+    {"NEW", "Program Control", "NEW", "Program and variables cleared", ""},
+    {"DELETE", "Program Control", "DELETE 10-50", "Deletes lines 10 through 50", ""},
+    {"AUTO", "Program Control", "AUTO", "AUTO 100", "Enters auto line numbering mode"},
     {"CLEAR", "Program Control", "CLEAR", "LET x=100", "CLEAR"},
     {"DIR", "Program Control", "DIR", "DIR", ""},
     {"NOTE", "Program Control", "10 NOTE \"Comment in code\"", "20 PRINT \"Next line\"", ""},
@@ -20,6 +23,8 @@ static const HelpEntry help_entries[] = {
     {"PRINT", "Input/Output", "PRINT \"Hello\"", "PRINT 42", "PRINT \"Value: \" x"},
     {"INPUT", "Input/Output", "INPUT \"Enter name: \"; name$", "PRINT name$", ""},
     {"LET", "Input/Output", "LET x=100", "LET y=x+50", "PRINT y"},
+    {"CLS", "Input/Output", "CLS", "Screen cleared", ""},
+    {"BEEP", "Input/Output", "BEEP", "Sounds speaker", ""},
     
     // LOOPS
     {"FOR", "Loops", "FOR i=1 TO 10", "PRINT i", "NEXT"},
@@ -30,6 +35,7 @@ static const HelpEntry help_entries[] = {
     // CONDITIONS
     {"IF", "Conditions", "IF x>10 THEN PRINT \"Big\"", "IF x<5 THEN GOTO 100", "IF y=0 THEN END"},
     {"THEN", "Conditions", "IF x>0 THEN PRINT \"Positive\"", "", ""},
+    {"ELSE", "Conditions", "IF x>0 THEN PRINT \"Pos\" ELSE PRINT \"Neg\"", "", ""},
     {"GOTO", "Conditions", "100 PRINT \"START\"", "GOTO 200", "200 END"},
     {"GOSUB", "Conditions", "GOSUB 1000", "PRINT result", "END"},
     {"RETURN", "Conditions", "1000 LET result=100", "RETURN", ""},
@@ -54,9 +60,40 @@ static const HelpEntry help_entries[] = {
     {"MIN", "Math Functions", "LET small=MIN(10,20)", "PRINT small", ""},
     {"PI", "Math Functions", "LET c=2*PI*r", "PRINT c", ""},
     
+    // STRING FUNCTIONS
+    {"LEN", "String Functions", "LET l=LEN(\"HELLO\")", "PRINT l", ""},
+    {"LEFT$", "String Functions", "LET s=LEFT$(\"HELLO\",2)", "PRINT s", ""},
+    {"RIGHT$", "String Functions", "LET s=RIGHT$(\"HELLO\",2)", "PRINT s", ""},
+    {"MID$", "String Functions", "LET s=MID$(\"HELLO\",2,3)", "PRINT s", ""},
+    {"CHR$", "String Functions", "LET c=CHR$(65)", "PRINT c", ""},
+    {"ASC", "String Functions", "LET a=ASC(\"A\")", "PRINT a", ""},
+    {"STR$", "String Functions", "LET s=STR$(42)", "PRINT s", ""},
+    {"VAL", "String Functions", "LET v=VAL(\"123\")", "PRINT v", ""},
+    {"INSTR", "String Functions", "LET p=INSTR(1,\"HELLO\",\"LL\")", "PRINT p", ""},
+    {"UCASE$", "String Functions", "LET u=UCASE$(\"hello\")", "PRINT u", ""},
+    {"LCASE$", "String Functions", "LET l=LCASE$(\"HELLO\")", "PRINT l", ""},
+    
+    // SYSTEM VARIABLES
+    {"TIMER", "System Variables", "LET t1=TIMER", "LET t2=TIMER", "PRINT t2-t1"},
+    {"RND", "System Variables", "LET r=RND", "PRINT r", ""},
+    
+    // FILE OPERATIONS
+    {"OPEN", "File Operations", "OPEN \"file.txt\" FOR OUTPUT AS 1", "", ""},
+    {"CLOSE", "File Operations", "CLOSE 1", "", ""},
+    {"PRINT#", "File Operations", "PRINT# 1, \"data\"", "", ""},
+    {"INPUT#", "File Operations", "INPUT# 1, data$", "", ""},
+    
+    // DATA OPERATIONS
+    {"DATA", "Data Operations", "10 DATA 1,2,3,4,5", "20 READ x", ""},
+    {"READ", "Data Operations", "10 DATA 100,200", "20 READ x,y", ""},
+    {"RESTORE", "Data Operations", "100 RESTORE", "110 READ x", ""},
+    {"DIM", "Data Operations", "DIM array(10)", "DIM matrix(5,5)", ""},
+    
     // REM AND UTILITIES
     {"REM", "Utilities", "10 REM This is a comment", "20 PRINT \"Code\"", ""},
+    {"HELP", "Utilities", "HELP", "HELP PRINT", "HELP LOOPS"},
 };
+
 
 #define NUM_ENTRIES (sizeof(help_entries) / sizeof(HelpEntry))
 

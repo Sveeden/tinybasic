@@ -83,6 +83,7 @@ static Token next_token(Tokenizer *tz) {
         else if (strcmp(keyword, "MAX") == 0) t.type = TOK_MAX;
         else if (strcmp(keyword, "MIN") == 0) t.type = TOK_MIN;
         else if (strcmp(keyword, "PI") == 0) t.type = TOK_PI;
+        else if (strcmp(keyword, "RND") == 0) t.type = TOK_RND;
         
         return t;
     }
@@ -218,6 +219,31 @@ static float primary(Tokenizer *tz, int *error) {
         }
         else if (func_type.type == TOK_EXP) return expf(val);
         else if (func_type.type == TOK_ROUND) return roundf(val);
+    }
+    
+    // RND function - returns random number from 1 to max (or 0-1 if no parameter)
+    else if (t.type == TOK_RND) {
+        Token open = next_token(tz);
+        if (open.type != TOK_OPEN_PAREN) {
+            *error = 1;
+            printf("?FUNCTION REQUIRES (\n");
+            return 0.0f;
+        }
+        
+        float max_val = evaluate_expression(tz, error);
+        if (*error) return 0.0f;
+        
+        Token close = next_token(tz);
+        if (close.type != TOK_CLOSE_PAREN) {
+            *error = 1;
+            printf("?MISSING CLOSING PAREN\n");
+            return 0.0f;
+        }
+        
+        // RND(max) returns random number from 1 to max (inclusive)
+        if (max_val < 1.0f) max_val = 1.0f;  // Minimum of 1
+        int result = (rand() % (int)max_val) + 1;
+        return (float)result * sign;
     }
     
     // Multi-argument functions
